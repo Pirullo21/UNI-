@@ -7,6 +7,7 @@
     <meta name="description" content="Auto d'eccezione, esperienze senza compromessi. Scopri il noleggio auto di lusso firmato Veloura.">
     <title>Veloura — Luxury Car Rental</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="concierge.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -134,7 +135,7 @@
             background:
                 linear-gradient(90deg, rgba(10,11,10,.88) 0%, rgba(10,11,10,.57) 42%, rgba(10,11,10,.08) 100%),
                 linear-gradient(0deg, rgba(10,11,10,.78) 0%, transparent 37%),
-                url("https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2200&q=88") center 56% / cover;
+                url("https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/2024_Porsche_911_992_Carrera.jpg/1920px-2024_Porsche_911_992_Carrera.jpg") center 56% / cover;
         }
         .hero-content {
             width: min(1280px, calc(100% - 80px));
@@ -230,6 +231,34 @@
             color: var(--cream);
             font-size: 12px;
         }
+        .booking-date-control { position: relative; min-width: 0; }
+        .booking-date-control .date-entry { padding-right: 32px; font-variant-numeric: tabular-nums; }
+        .booking-date-control .date-picker-button {
+            position: absolute;
+            top: -8px;
+            right: -4px;
+            display: grid;
+            width: 32px;
+            height: 38px;
+            place-items: center;
+            border: 0;
+            background: transparent;
+            color: var(--gold-light);
+            cursor: pointer;
+        }
+        .booking-date-control .date-picker-button svg { width: 16px; height: 16px; }
+        .booking-date-control input[type="date"] {
+            position: absolute;
+            top: -8px;
+            right: -4px;
+            width: 32px;
+            height: 38px;
+            padding: 0;
+            border: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .booking-date-control .date-picker-button:focus-visible { outline: 2px solid var(--gold-light); outline-offset: -3px; }
         .booking-field select { cursor: pointer; }
         .booking-field option { background: var(--panel); color: var(--cream); }
         .booking-submit { margin-left: 22px; border: 0; cursor: pointer; }
@@ -258,7 +287,11 @@
         .fleet-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 31px; }
         .fleet-heading h2 { font-size: 40px; }
         .fleet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 19px; }
-        .car-card { overflow: hidden; background: var(--panel); border: 1px solid rgba(255,255,255,.07); }
+        .brand-group .fleet-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .brand-group + .brand-group { margin-top: 54px; }
+        .brand-title { display: flex; align-items: center; gap: 16px; margin: 0 0 17px; color: var(--gold-light); font-family: var(--serif); font-size: 25px; font-weight: 500; }
+        .brand-title::after { height: 1px; flex: 1; background: var(--line); content: ""; }
+        .car-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; background: var(--panel); border: 1px solid rgba(255,255,255,.07); }
         .car-image { position: relative; height: 225px; overflow: hidden; background: #20211d; }
         .car-photo-link { display: block; width: 100%; height: 100%; }
         .car-photo-link:focus-visible { outline: 2px solid var(--gold-light); outline-offset: -3px; }
@@ -275,12 +308,14 @@
             letter-spacing: .13em;
             text-transform: uppercase;
         }
-        .car-info { padding: 22px 22px 20px; }
-        .car-title-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-        .car-info h3 { margin-bottom: 8px; font-family: var(--serif); font-size: 23px; font-weight: 500; }
+        .car-info { display: flex; flex: 1; flex-direction: column; padding: 22px 22px 20px; }
+        .car-title-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 12px; }
+        .car-info h3 { min-height: 2.4em; margin-bottom: 8px; font-family: var(--serif); font-size: 23px; font-weight: 500; line-height: 1.2; }
         .car-price { color: var(--gold-light); font-size: 11px; white-space: nowrap; }
         .car-meta { display: flex; gap: 17px; color: var(--muted); font-size: 10px; }
-        .card-rule { margin: 18px 0 15px; border: 0; border-top: 1px solid var(--line); }
+        .image-credit { display: block; min-height: 2.8em; margin-top: 14px; color: var(--muted); font-size: 9px; line-height: 1.5; }
+        .image-credit:hover { color: var(--gold-light); }
+        .card-rule { width: 100%; margin: auto 0 15px; border: 0; border-top: 1px solid var(--line); }
         .car-link { color: var(--cream); font-size: 9px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
         .car-link span { padding-left: 5px; color: var(--gold); }
         .service-band { background: #191a17; border-top: 1px solid rgba(255,255,255,.06); }
@@ -321,7 +356,7 @@
             .booking-field:nth-child(3) { padding-left: 5px; }
             .booking-submit { margin-left: 15px; }
             .intro-section { gap: 38px; padding-top: 88px; }
-            .fleet-grid { gap: 13px; }
+            .fleet-grid, .brand-group .fleet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
             .car-image { height: 175px; }
             .car-info { padding: 18px 15px; }
             .car-meta { gap: 9px; font-size: 9px; }
@@ -380,6 +415,7 @@
             .fleet-heading h2 { font-size: 34px; }
             .fleet-heading .text-link { margin-top: 13px; white-space: nowrap; }
             .fleet-grid { grid-template-columns: 1fr; gap: 15px; }
+            .brand-group .fleet-grid { grid-template-columns: 1fr; }
             .car-image { height: 220px; }
             .car-info { padding: 20px; }
             .car-meta { gap: 15px; font-size: 10px; }
@@ -396,7 +432,7 @@
     <div class="announcement" data-i18n="announcement">Un’esperienza su misura. Ovunque ti porti la strada.</div>
     <header class="site-header">
         <div class="nav-wrap">
-            <a class="brand" href="#" aria-label="Veloura home"><span class="brand-mark">V</span>VELOURA</a>
+            <a class="brand" href="index.html" aria-label="Veloura home"><span class="brand-mark">V</span>VELOURA</a>
             <nav class="main-nav" id="main-nav" aria-label="Navigazione principale">
                 <a href="#fleet" data-i18n="navFleet">La flotta</a>
                 <a href="#experience" data-i18n="navExperience">L’esperienza</a>
@@ -450,11 +486,23 @@
                 </div>
                 <div class="booking-field">
                     <label for="pickup-date" data-i18n="dateLabel">Data di ritiro</label>
-                    <input id="pickup-date" name="pickup" type="date" required>
+                    <div class="booking-date-control">
+                        <input class="date-entry" id="pickup-date" name="pickup" type="text" inputmode="numeric" autocomplete="off" placeholder="gg/mm/aaaa" required>
+                        <button class="date-picker-button" type="button" data-picker="pickup-date-picker" data-i18n-aria="openPickupCalendar" aria-label="Apri il calendario per la data di ritiro">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 3.5v3M16.5 3.5v3M3.5 9h17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                        </button>
+                        <input id="pickup-date-picker" type="date" tabindex="-1" aria-hidden="true">
+                    </div>
                 </div>
                 <div class="booking-field">
                     <label for="return-date" data-i18n="returnLabel">Data di riconsegna</label>
-                    <input id="return-date" name="return" type="date" required>
+                    <div class="booking-date-control">
+                        <input class="date-entry" id="return-date" name="return" type="text" inputmode="numeric" autocomplete="off" placeholder="gg/mm/aaaa" required>
+                        <button class="date-picker-button" type="button" data-picker="return-date-picker" data-i18n-aria="openReturnCalendar" aria-label="Apri il calendario per la data di riconsegna">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 3.5v3M16.5 3.5v3M3.5 9h17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                        </button>
+                        <input id="return-date-picker" type="date" tabindex="-1" aria-hidden="true">
+                    </div>
                 </div>
                 <button class="button-primary booking-submit" type="submit" data-i18n="searchCta">Cerca un’auto</button>
             </form>
@@ -477,50 +525,76 @@
                 </div>
                 <a class="text-link" href="#booking"><span data-i18n="fleetLink">Vedi tutte le auto</span><span>↗</span></a>
             </div>
-            <div class="fleet-grid">
-                <article class="car-card">
-                    <div class="car-image">
-                        <a class="car-photo-link" href="vehicle.html?car=porsche-911" aria-label="Scopri Porsche 911 Carrera">
-                            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=900&q=82" alt="Auto sportiva Porsche in una strada alpina" loading="lazy">
-                        </a>
-                        <span class="car-category" data-i18n="categorySport">Sportiva</span>
-                    </div>
-                    <div class="car-info">
-                        <div class="car-title-row"><h3>Porsche 911 Carrera</h3><span class="car-price">€ 490 <span data-i18n="perDay">/ giorno</span></span></div>
-                        <div class="car-meta"><span>3.0L · 385 CV</span><span data-i18n="metaAuto">Automatica</span><span>2+2 <span data-i18n="seats">posti</span></span></div>
-                        <hr class="card-rule">
-                        <a class="car-link" href="vehicle.html?car=porsche-911"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
-                    </div>
-                </article>
-                <article class="car-card">
-                    <div class="car-image">
-                        <a class="car-photo-link" href="vehicle.html?car=range-rover-sport" aria-label="Scopri Range Rover Sport">
-                            <img src="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=900&q=82" alt="SUV di lusso pronto per un viaggio" loading="lazy">
-                        </a>
-                        <span class="car-category" data-i18n="categorySuv">SUV di lusso</span>
-                    </div>
-                    <div class="car-info">
-                        <div class="car-title-row"><h3>Range Rover Sport</h3><span class="car-price">€ 390 <span data-i18n="perDay">/ giorno</span></span></div>
-                        <div class="car-meta"><span>3.0L · 350 CV</span><span data-i18n="metaAuto">Automatica</span><span>5 <span data-i18n="seats">posti</span></span></div>
-                        <hr class="card-rule">
-                        <a class="car-link" href="vehicle.html?car=range-rover-sport"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
-                    </div>
-                </article>
-                <article class="car-card">
-                    <div class="car-image">
-                        <a class="car-photo-link" href="vehicle.html?car=mercedes-s-class" aria-label="Scopri Mercedes-Benz Classe S">
-                            <img src="https://images.unsplash.com/photo-1502957291543-d85480254bf8?auto=format&fit=crop&w=900&q=82" alt="Elegante auto di lusso nera" loading="lazy">
-                        </a>
-                        <span class="car-category" data-i18n="categoryElegance">Eleganza</span>
-                    </div>
-                    <div class="car-info">
-                        <div class="car-title-row"><h3>Mercedes-Benz Classe S</h3><span class="car-price">€ 520 <span data-i18n="perDay">/ giorno</span></span></div>
-                        <div class="car-meta"><span>3.0L · 367 CV</span><span data-i18n="metaAuto">Automatica</span><span>5 <span data-i18n="seats">posti</span></span></div>
-                        <hr class="card-rule">
-                        <a class="car-link" href="vehicle.html?car=mercedes-s-class"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
-                    </div>
-                </article>
-            </div>
+            <section class="brand-group" data-brand="Porsche" aria-labelledby="brand-porsche">
+                <h3 class="brand-title" id="brand-porsche">Porsche</h3>
+                <div class="fleet-grid">
+                    <article class="car-card" data-car-class="sport">
+                        <div class="car-image"><a class="car-photo-link" href="vehicle.html?car=porsche-911" aria-label="Scopri Porsche 911 Carrera"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/2024_Porsche_911_992_Carrera.jpg/960px-2024_Porsche_911_992_Carrera.jpg" alt="Porsche 911 Carrera 992 blu, esemplare 2024" loading="lazy"></a><span class="car-category" data-i18n="categorySport">Sportiva</span></div>
+                        <div class="car-info">
+                            <div class="car-title-row"><h3>Porsche 911 Carrera</h3><span class="car-price">€ 490 <span data-i18n="perDay">/ giorno</span></span></div>
+                            <div class="car-meta"><span>3.0L · 385 CV</span><span data-i18n="metaAuto">Automatica</span><span>2+2 <span data-i18n="seats">posti</span></span></div>
+                            <a class="image-credit" data-i18n="porschePhotoCredit" href="https://commons.wikimedia.org/wiki/File:2024_Porsche_911_992_Carrera.jpg" target="_blank" rel="noopener">Foto: Calreyn88 · Wikimedia Commons · CC BY-SA 4.0</a>
+                            <hr class="card-rule"><a class="car-link" href="vehicle.html?car=porsche-911"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
+                        </div>
+                    </article>
+                    <article class="car-card" data-car-class="suv">
+                        <div class="car-image"><a class="car-photo-link" href="vehicle.html?car=porsche-cayenne" aria-label="Scopri Porsche Cayenne"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Porsche_Cayenne_%28Hong_Kong%29_front%2C_Dongguan_13_June_2024.jpg/960px-Porsche_Cayenne_%28Hong_Kong%29_front%2C_Dongguan_13_June_2024.jpg" alt="Porsche Cayenne, esemplare fotografato nel 2024" loading="lazy"></a><span class="car-category" data-i18n="categorySuv">SUV di lusso</span></div>
+                        <div class="car-info">
+                            <div class="car-title-row"><h3>Porsche Cayenne</h3><span class="car-price">€ 420 <span data-i18n="perDay">/ giorno</span></span></div>
+                            <div class="car-meta"><span>3.0L · 353 CV</span><span data-i18n="metaAuto">Automatica</span><span>5 <span data-i18n="seats">posti</span></span></div>
+                            <a class="image-credit" data-i18n="cayennePhotoCredit" href="https://commons.wikimedia.org/wiki/File:Porsche_Cayenne_(Hong_Kong)_front,_Dongguan_13_June_2024.jpg" target="_blank" rel="noopener">Foto: メイド理世 · Wikimedia Commons · CC BY-SA 4.0</a>
+                            <hr class="card-rule"><a class="car-link" href="vehicle.html?car=porsche-cayenne"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+            <section class="brand-group" data-brand="Land Rover" aria-labelledby="brand-land-rover">
+                <h3 class="brand-title" id="brand-land-rover">Land Rover</h3>
+                <div class="fleet-grid">
+                    <article class="car-card" data-car-class="suv">
+                        <div class="car-image"><a class="car-photo-link" href="vehicle.html?car=range-rover-sport" aria-label="Scopri Range Rover Sport"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Land_Rover_Range_Rover_Sport_L461_Carpathian_Grey_%281%29.jpg/960px-Land_Rover_Range_Rover_Sport_L461_Carpathian_Grey_%281%29.jpg" alt="Range Rover Sport L461 grigio Carpathian" loading="lazy"></a><span class="car-category" data-i18n="categorySuv">SUV di lusso</span></div>
+                        <div class="car-info">
+                            <div class="car-title-row"><h3>Range Rover Sport</h3><span class="car-price">€ 390 <span data-i18n="perDay">/ giorno</span></span></div>
+                            <div class="car-meta"><span>3.0L · 350 CV</span><span data-i18n="metaAuto">Automatica</span><span>5 <span data-i18n="seats">posti</span></span></div>
+                            <a class="image-credit" data-i18n="rangePhotoCredit" href="https://commons.wikimedia.org/wiki/File:Land_Rover_Range_Rover_Sport_L461_Carpathian_Grey_(1).jpg" target="_blank" rel="noopener">Foto: Damian B Oh · Wikimedia Commons · CC BY-SA 4.0</a>
+                            <hr class="card-rule"><a class="car-link" href="vehicle.html?car=range-rover-sport"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
+                        </div>
+                    </article>
+                    <article class="car-card" data-car-class="suv">
+                        <div class="car-image"><a class="car-photo-link" href="vehicle.html?car=range-rover-velar" aria-label="Scopri Range Rover Velar"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Range_Rover_Velar_P250_SE_IMG_8831.jpg/960px-Range_Rover_Velar_P250_SE_IMG_8831.jpg" alt="Range Rover Velar P250 SE" loading="lazy"></a><span class="car-category" data-i18n="categorySuv">SUV di lusso</span></div>
+                        <div class="car-info">
+                            <div class="car-title-row"><h3>Range Rover Velar P250 SE</h3><span class="car-price">€ 350 <span data-i18n="perDay">/ giorno</span></span></div>
+                            <div class="car-meta"><span>2.0L · 250 CV</span><span data-i18n="metaAuto">Automatica</span><span>5 <span data-i18n="seats">posti</span></span></div>
+                            <a class="image-credit" data-i18n="velarPhotoCredit" href="https://commons.wikimedia.org/wiki/File:Range_Rover_Velar_P250_SE_IMG_8831.jpg" target="_blank" rel="noopener">Foto: Alexander Migl · Wikimedia Commons · CC BY-SA 4.0</a>
+                            <hr class="card-rule"><a class="car-link" href="vehicle.html?car=range-rover-velar"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+            <section class="brand-group" data-brand="Mercedes-Benz" aria-labelledby="brand-mercedes">
+                <h3 class="brand-title" id="brand-mercedes">Mercedes-Benz</h3>
+                <div class="fleet-grid">
+                    <article class="car-card" data-car-class="elegance">
+                        <div class="car-image"><a class="car-photo-link" href="vehicle.html?car=mercedes-s-class" aria-label="Scopri Mercedes-Benz Classe S"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Mercedes-Benz_W223_IMG_3949.jpg/960px-Mercedes-Benz_W223_IMG_3949.jpg" alt="Mercedes-Benz Classe S W223 bianca" loading="lazy"></a><span class="car-category" data-i18n="categoryElegance">Eleganza</span></div>
+                        <div class="car-info">
+                            <div class="car-title-row"><h3>Mercedes-Benz Classe S</h3><span class="car-price">€ 520 <span data-i18n="perDay">/ giorno</span></span></div>
+                            <div class="car-meta"><span>3.0L · 367 CV</span><span data-i18n="metaAuto">Automatica</span><span>5 <span data-i18n="seats">posti</span></span></div>
+                            <a class="image-credit" data-i18n="mercedesPhotoCredit" href="https://commons.wikimedia.org/wiki/File:Mercedes-Benz_W223_IMG_3949.jpg" target="_blank" rel="noopener">Foto: Alexander Migl · Wikimedia Commons · CC BY-SA 4.0</a>
+                            <hr class="card-rule"><a class="car-link" href="vehicle.html?car=mercedes-s-class"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
+                        </div>
+                    </article>
+                    <article class="car-card" data-car-class="sport">
+                        <div class="car-image"><a class="car-photo-link" href="vehicle.html?car=mercedes-amg-gt-r" aria-label="Scopri Mercedes-AMG GT R"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-AMG_C190_GT_R_1X7A1632.jpg/960px-Mercedes-AMG_C190_GT_R_1X7A1632.jpg" alt="Mercedes-AMG GT R C190" loading="lazy"></a><span class="car-category" data-i18n="categorySport">Sportiva</span></div>
+                        <div class="car-info">
+                            <div class="car-title-row"><h3>Mercedes-AMG GT R</h3><span class="car-price">€ 690 <span data-i18n="perDay">/ giorno</span></span></div>
+                            <div class="car-meta"><span>4.0L · 585 CV</span><span data-i18n="metaAuto">Automatica</span><span>2 <span data-i18n="seats">posti</span></span></div>
+                            <a class="image-credit" data-i18n="amgPhotoCredit" href="https://commons.wikimedia.org/wiki/File:Mercedes-AMG_C190_GT_R_1X7A1632.jpg" target="_blank" rel="noopener">Foto: Alexander Migl · Wikimedia Commons · CC BY-SA 4.0</a>
+                            <hr class="card-rule"><a class="car-link" href="vehicle.html?car=mercedes-amg-gt-r"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+            <div id="catalog-fleet"></div>
         </section>
 
         <section class="service-band">
@@ -532,11 +606,12 @@
     </main>
     <footer id="contact">
         <div class="footer-content">
-            <a class="brand" href="#"><span class="brand-mark">V</span>VELOURA</a>
+            <a class="brand" href="index.html" aria-label="Veloura home"><span class="brand-mark">V</span>VELOURA</a>
             <span data-i18n="footerCopy">© 2025 Veloura. L’eccellenza, in movimento.</span>
             <a href="mailto:concierge@veloura.it">concierge@veloura.it</a>
         </div>
     </footer>
+    <script src="vehicle-catalog.js"></script>
     <script>
         const translations = {
             it: {
@@ -548,6 +623,12 @@
                 pickupLabel: "Luogo di ritiro", classLabel: "Categoria", dateLabel: "Data di ritiro", returnLabel: "Data di riconsegna",
                 cityMilan: "Milano", cityRome: "Roma", cityFlorence: "Firenze", cityVenice: "Venezia",
                 classAll: "Tutte le auto", classSport: "Sportiva", classSuv: "SUV di lusso", classElegance: "Elegante",
+                porschePhotoCredit: "Foto: Calreyn88 · Wikimedia Commons · CC BY-SA 4.0",
+                rangePhotoCredit: "Foto: Damian B Oh · Wikimedia Commons · CC BY-SA 4.0",
+                mercedesPhotoCredit: "Foto: Alexander Migl · Wikimedia Commons · CC BY-SA 4.0",
+                cayennePhotoCredit: "Foto: メイド理世 · Wikimedia Commons · CC BY-SA 4.0",
+                velarPhotoCredit: "Foto: Alexander-93 · Wikimedia Commons · CC BY-SA 4.0",
+                amgPhotoCredit: "Foto: Alexander-93 · Wikimedia Commons · CC BY-SA 4.0",
                 searchCta: "Cerca un’auto", introEyebrow: "Oltre il viaggio", introTitle: "Non è solo l’auto.<br>È come ti fa sentire.",
                 introCopy: "Dalla prima chiave consegnata a mano all’ultimo chilometro: ogni dettaglio è pensato per lasciarti libero di goderti il viaggio. Auto impeccabili, assistenza dedicata, nessuna attesa.",
                 fleetEyebrow: "Una scelta straordinaria", fleetTitle: "La nostra flotta", fleetLink: "Vedi tutte le auto",
@@ -557,6 +638,10 @@
                 serviceCta: "Parla con il concierge", footerCopy: "© 2026 Veloura. L’eccellenza, in movimento.",
                 bookingSuccess: "Richiesta pronta per {location}: ti ricontatteremo per confermare la disponibilità.",
                 bookingInvalid: "La data di riconsegna deve essere successiva alla data di ritiro.",
+                bookingInvalidFormat: "Inserisci le date nel formato GG/MM/AAAA, ad esempio 25/10/2026.",
+                bookingPast: "La data di ritiro non può essere nel passato.",
+                openPickupCalendar: "Apri il calendario per la data di ritiro",
+                openReturnCalendar: "Apri il calendario per la data di riconsegna",
                 menuOpen: "Apri menu", menuClose: "Chiudi menu"
             },
             en: {
@@ -568,6 +653,12 @@
                 pickupLabel: "Pick-up location", classLabel: "Category", dateLabel: "Pick-up date", returnLabel: "Return date",
                 cityMilan: "Milan", cityRome: "Rome", cityFlorence: "Florence", cityVenice: "Venice",
                 classAll: "All cars", classSport: "Sports", classSuv: "Luxury SUV", classElegance: "Elegance",
+                porschePhotoCredit: "Photo: Calreyn88 · Wikimedia Commons · CC BY-SA 4.0",
+                rangePhotoCredit: "Photo: Damian B Oh · Wikimedia Commons · CC BY-SA 4.0",
+                mercedesPhotoCredit: "Photo: Alexander Migl · Wikimedia Commons · CC BY-SA 4.0",
+                cayennePhotoCredit: "Photo: メイド理世 · Wikimedia Commons · CC BY-SA 4.0",
+                velarPhotoCredit: "Photo: Alexander-93 · Wikimedia Commons · CC BY-SA 4.0",
+                amgPhotoCredit: "Photo: Alexander-93 · Wikimedia Commons · CC BY-SA 4.0",
                 searchCta: "Find a car", introEyebrow: "Beyond the journey", introTitle: "It’s not just the car.<br>It’s how it makes you feel.",
                 introCopy: "From the hand-delivered keys to the final mile, every detail is designed to let you enjoy the journey. Impeccable cars, personal assistance, no waiting.",
                 fleetEyebrow: "An extraordinary choice", fleetTitle: "Our collection", fleetLink: "View all cars",
@@ -577,22 +668,193 @@
                 serviceCta: "Speak to the concierge", footerCopy: "© 2026 Veloura. Excellence in motion.",
                 bookingSuccess: "Your request for {location} is ready. We’ll be in touch to confirm availability.",
                 bookingInvalid: "The return date must be after the pick-up date.",
+                bookingInvalidFormat: "Enter dates in DD/MM/YYYY format, for example 25/10/2026.",
+                bookingPast: "The pick-up date cannot be in the past.",
+                openPickupCalendar: "Open pick-up date calendar",
+                openReturnCalendar: "Open return date calendar",
                 menuOpen: "Open menu", menuClose: "Close menu"
             }
         };
 
         let currentLanguage = "it";
+        const catalogFleet = document.getElementById("catalog-fleet");
         const languageButtons = document.querySelectorAll("[data-language]");
         const bookingForm = document.getElementById("booking-form");
         const pickupDate = document.getElementById("pickup-date");
         const returnDate = document.getElementById("return-date");
+        const pickupPicker = document.getElementById("pickup-date-picker");
+        const returnPicker = document.getElementById("return-date-picker");
         const bookingMessage = document.getElementById("booking-message");
         const menuToggle = document.querySelector(".menu-toggle");
         const today = new Date();
         const todayString = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 
-        pickupDate.min = todayString;
-        returnDate.min = todayString;
+        function renderCatalogFleet() {
+            catalogFleet.querySelectorAll(".brand-group[data-generated-brand]").forEach((group) => group.remove());
+            document.querySelectorAll(".fleet-section .car-card[data-catalog-card]").forEach((card) => card.remove());
+            const groups = new Map();
+            for (const vehicle of window.VELOURA_CATALOG) {
+                let group = groups.get(vehicle.brand);
+                if (!group) {
+                    const existingGroup = document.querySelector(`.brand-group[data-brand="${vehicle.brand}"]`);
+                    if (existingGroup) {
+                        group = existingGroup.querySelector(".fleet-grid");
+                    } else {
+                        const brandId = `brand-${vehicle.brand.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+                        const section = document.createElement("section");
+                        section.className = "brand-group";
+                        section.dataset.brand = vehicle.brand;
+                        section.dataset.generatedBrand = "true";
+                        section.setAttribute("aria-labelledby", brandId);
+                        section.innerHTML = `<h3 class="brand-title" id="${brandId}">${vehicle.brand}</h3><div class="fleet-grid"></div>`;
+                        catalogFleet.append(section);
+                        group = section.querySelector(".fleet-grid");
+                    }
+                    groups.set(vehicle.brand, group);
+                }
+                const carName = vehicle.name[currentLanguage];
+                const engine = vehicle.specs.find(([key]) => key === "engine")[currentLanguage === "it" ? 1 : 2];
+                const power = vehicle.specs.find(([key]) => key === "power")[currentLanguage === "it" ? 1 : 2];
+                const seats = vehicle.specs.find(([key]) => key === "seats")[currentLanguage === "it" ? 1 : 2];
+                const categoryKey = vehicle.class === "sport" ? "categorySport" : vehicle.class === "suv" ? "categorySuv" : "categoryElegance";
+                const category = translations[currentLanguage][categoryKey];
+                const article = document.createElement("article");
+                article.className = "car-card";
+                article.dataset.carClass = vehicle.class;
+                article.dataset.catalogCard = "true";
+                article.innerHTML = `
+                    <div class="car-image"><a class="car-photo-link" href="vehicle.html?car=${encodeURIComponent(vehicle.id)}" aria-label="${currentLanguage === "it" ? "Scopri" : "Discover"} ${carName}"><img src="${vehicle.image}" alt="${vehicle.images[0].alt[currentLanguage]}" loading="lazy"></a><span class="car-category">${category}</span></div>
+                    <div class="car-info">
+                        <div class="car-title-row"><h3>${carName}</h3><span class="car-price">€ ${vehicle.price} <span>${translations[currentLanguage].perDay}</span></span></div>
+                        <div class="car-meta"><span>${engine} · ${power}</span><span>${translations[currentLanguage].metaAuto}</span><span>${seats}</span></div>
+                        <a class="image-credit" href="${vehicle.photoSource}" target="_blank" rel="noopener">${currentLanguage === "it" ? "Foto" : "Photo"}: ${vehicle.photoAuthor} · Wikimedia Commons · ${vehicle.license}</a>
+                        <hr class="card-rule"><a class="car-link" href="vehicle.html?car=${encodeURIComponent(vehicle.id)}"><span>${translations[currentLanguage].discoverCar}</span><span>↗</span></a>
+                    </div>`;
+                group.append(article);
+            }
+
+            const brandGroups = [...document.querySelectorAll(".fleet-section .brand-group")];
+            for (const brandGroup of brandGroups) {
+                const grid = brandGroup.querySelector(".fleet-grid");
+                [...grid.querySelectorAll(".car-card")]
+                    .sort((left, right) => left.querySelector("h3").textContent.localeCompare(right.querySelector("h3").textContent, currentLanguage))
+                    .forEach((card) => grid.append(card));
+            }
+            brandGroups
+                .sort((left, right) => left.dataset.brand.localeCompare(right.dataset.brand, currentLanguage))
+                .forEach((brandGroup) => catalogFleet.append(brandGroup));
+            applyFleetFilter();
+        }
+
+        function applyFleetFilter() {
+            const selectedClass = {
+                Sportiva: "sport",
+                SUV: "suv",
+                Elegante: "elegance"
+            }[document.getElementById("car-class").value];
+            document.querySelectorAll(".fleet-section .brand-group").forEach((brandGroup) => {
+                let hasVisibleCars = false;
+                brandGroup.querySelectorAll(".car-card").forEach((card) => {
+                    card.hidden = Boolean(selectedClass && card.dataset.carClass !== selectedClass);
+                    if (!card.hidden) hasVisibleCars = true;
+                });
+                brandGroup.hidden = !hasVisibleCars;
+            });
+        }
+
+        pickupPicker.min = todayString;
+        returnPicker.min = todayString;
+
+        function parseDateInput(value) {
+            const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim());
+            if (!match) return "";
+            const [, day, month, year] = match;
+            const isoDate = `${year}-${month}-${day}`;
+            const timestamp = Date.parse(`${isoDate}T00:00:00.000Z`);
+            return Number.isFinite(timestamp) && new Date(timestamp).toISOString().slice(0, 10) === isoDate
+                ? isoDate
+                : "";
+        }
+
+        function formatDateInput(value) {
+            if (!value) return "";
+            const [year, month, day] = value.split("-");
+            return `${day}/${month}/${year}`;
+        }
+
+        function formatDateEntry(input) {
+            const caret = input.selectionStart ?? input.value.length;
+            const digitsBeforeCaret = input.value.slice(0, caret).replace(/\D/g, "").length;
+            const digits = input.value.replace(/\D/g, "").slice(0, 8);
+            let formatted = digits.slice(0, 2);
+            if (digits.length > 2) formatted += `/${digits.slice(2, 4)}`;
+            if (digits.length > 4) formatted += `/${digits.slice(4)}`;
+            input.value = formatted;
+
+            if (digitsBeforeCaret === 0) {
+                input.setSelectionRange(0, 0);
+                return;
+            }
+            let position = 0;
+            let digitCount = 0;
+            while (position < formatted.length && digitCount < digitsBeforeCaret) {
+                if (/\d/.test(formatted[position])) digitCount += 1;
+                position += 1;
+            }
+            if ((digitCount === 2 || digitCount === 4) && formatted[position] === "/") position += 1;
+            input.setSelectionRange(position, position);
+        }
+
+        [pickupDate, returnDate].forEach((input) => {
+            input.addEventListener("keydown", (event) => {
+                const position = input.selectionStart;
+                if (event.key === "Backspace" && position === input.selectionEnd && input.value[position - 1] === "/") {
+                    input.setSelectionRange(position - 1, position - 1);
+                } else if (event.key === "Delete" && position === input.selectionEnd && input.value[position] === "/") {
+                    input.setSelectionRange(position + 1, position + 1);
+                }
+            });
+            input.addEventListener("input", () => formatDateEntry(input));
+        });
+
+        function syncPickupDate() {
+            const pickup = parseDateInput(pickupDate.value);
+            pickupPicker.value = pickup && pickup >= todayString ? pickup : "";
+            returnPicker.min = pickup && pickup >= todayString ? pickup : todayString;
+            const dropoff = parseDateInput(returnDate.value);
+            if (dropoff && pickup && dropoff <= pickup) {
+                returnDate.value = "";
+                returnPicker.value = "";
+            }
+            bookingMessage.textContent = "";
+        }
+
+        function syncReturnDate() {
+            const dropoff = parseDateInput(returnDate.value);
+            returnPicker.value = dropoff && dropoff >= returnPicker.min ? dropoff : "";
+            bookingMessage.textContent = "";
+        }
+
+        pickupDate.addEventListener("input", syncPickupDate);
+        pickupDate.addEventListener("change", syncPickupDate);
+        returnDate.addEventListener("input", syncReturnDate);
+        returnDate.addEventListener("change", syncReturnDate);
+        pickupPicker.addEventListener("change", () => {
+            pickupDate.value = formatDateInput(pickupPicker.value);
+            syncPickupDate();
+            returnDate.focus();
+        });
+        returnPicker.addEventListener("change", () => {
+            returnDate.value = formatDateInput(returnPicker.value);
+            syncReturnDate();
+        });
+        document.querySelectorAll(".date-picker-button").forEach((button) => {
+            button.addEventListener("click", () => {
+                const picker = document.getElementById(button.dataset.picker);
+                if (typeof picker.showPicker === "function") picker.showPicker();
+                else picker.click();
+            });
+        });
 
         function setLanguage(language) {
             currentLanguage = language;
@@ -604,6 +866,12 @@
             document.querySelectorAll("[data-i18n-html]").forEach((element) => {
                 element.innerHTML = translations[language][element.dataset.i18nHtml];
             });
+            document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
+                element.setAttribute("aria-label", translations[language][element.dataset.i18nAria]);
+            });
+            renderCatalogFleet();
+            pickupDate.placeholder = language === "it" ? "gg/mm/aaaa" : "dd/mm/yyyy";
+            returnDate.placeholder = language === "it" ? "gg/mm/aaaa" : "dd/mm/yyyy";
             languageButtons.forEach((button) => {
                 button.setAttribute("aria-pressed", String(button.dataset.language === language));
             });
@@ -615,16 +883,23 @@
         languageButtons.forEach((button) => {
             button.addEventListener("click", () => setLanguage(button.dataset.language));
         });
+        renderCatalogFleet();
         setLanguage(localStorage.getItem("veloura-language") === "en" ? "en" : "it");
-
-        pickupDate.addEventListener("change", () => {
-            returnDate.min = pickupDate.value || todayString;
-            if (returnDate.value && returnDate.value <= pickupDate.value) returnDate.value = "";
-        });
+        document.getElementById("car-class").addEventListener("change", applyFleetFilter);
 
         bookingForm.addEventListener("submit", (event) => {
             event.preventDefault();
-            if (returnDate.value <= pickupDate.value) {
+            const pickup = parseDateInput(pickupDate.value);
+            const dropoff = parseDateInput(returnDate.value);
+            if (!pickup || !dropoff) {
+                bookingMessage.textContent = translations[currentLanguage].bookingInvalidFormat;
+                return;
+            }
+            if (pickup < todayString) {
+                bookingMessage.textContent = translations[currentLanguage].bookingPast;
+                return;
+            }
+            if (dropoff <= pickup) {
                 bookingMessage.textContent = translations[currentLanguage].bookingInvalid;
                 return;
             }
@@ -647,5 +922,6 @@
             });
         });
     </script>
+    <script src="concierge.js" defer></script>
 </body>
 </html>

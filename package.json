@@ -1,0 +1,11 @@
+{
+  "name": "veloura-luxury-rental",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "stripe": "^18.5.0"
+  }
+}

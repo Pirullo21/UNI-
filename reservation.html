@@ -8,6 +8,7 @@
     <title>Veloura — Prenotazione</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="concierge.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -72,6 +73,45 @@
         .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); }
         .field input::placeholder, .field textarea::placeholder { color: #77776f; }
         .field option { background: var(--panel); }
+        .date-control { position: relative; min-width: 0; }
+        .date-control .date-entry { padding-right: 49px; font-variant-numeric: tabular-nums; }
+        .date-picker-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: grid;
+            width: 45px;
+            height: 45px;
+            place-items: center;
+            border: 0;
+            background: transparent;
+            color: var(--gold-light);
+            cursor: pointer;
+        }
+        .date-picker-button svg { width: 17px; height: 17px; }
+        .date-control input[type="date"] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 45px;
+            height: 45px;
+            padding: 0;
+            border: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .date-picker-button:focus-visible { outline: 2px solid var(--gold-light); outline-offset: -3px; }
+        .color-field { min-width: 0; margin: 0; padding: 0; border: 0; }
+        .color-field legend { margin-bottom: 10px; color: var(--muted); font-size: 9px; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
+        .color-options { display: flex; flex-wrap: wrap; gap: 9px; }
+        .color-option { position: relative; display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 7px 10px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; cursor: pointer; }
+        .color-option:has(input:checked) { border-color: var(--gold); color: var(--cream); }
+        .color-option:focus-within { outline: 2px solid var(--gold-light); outline-offset: 2px; }
+        .color-option input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+        .color-swatch { width: 13px; height: 13px; flex: 0 0 13px; border: 1px solid rgba(255,255,255,.35); border-radius: 50%; }
+        .color-note { margin: 9px 0 0; color: var(--muted); font-size: 9px; line-height: 1.6; }
+        .payment-consent { display: flex; align-items: flex-start; gap: 9px; margin-top: 16px; color: var(--muted); font-size: 10px; line-height: 1.6; }
+        .payment-consent input { width: 16px; height: 16px; flex: 0 0 16px; margin: 1px 0 0; accent-color: var(--gold); }
         .form-error { min-height: 20px; margin: 13px 0 0; color: #f0a398; font-size: 11px; }
         .submit-button, .button-secondary {
             display: inline-flex;
@@ -93,8 +133,18 @@
         .button-secondary { background: transparent; color: var(--gold-light); }
         .button-secondary:hover { background: var(--gold); color: #171611; }
         .terms-note { margin: 13px 0 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+        .journey-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: -15px 0 25px; }
+        .journey-step { display: flex; align-items: center; gap: 9px; min-height: 44px; padding: 8px 11px; border: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+        .journey-step strong { display: grid; width: 22px; height: 22px; flex: 0 0 22px; place-items: center; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold-light); font-size: 10px; }
+        .journey-step[aria-current="step"] { border-color: var(--gold); color: var(--cream); }
+        .payment-status { margin: 0 0 20px; padding: 13px 15px; border: 1px solid var(--gold); background: rgba(201,169,110,.08); color: var(--cream); font-size: 12px; line-height: 1.6; }
+        .payment-retry { margin: -11px 0 20px; padding: 6px 0; border: 0; background: transparent; color: var(--gold-light); font-size: 11px; text-decoration: underline; cursor: pointer; }
+        .submit-button:disabled { cursor: wait; opacity: .68; }
+        :focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
         .summary-panel { position: sticky; top: 22px; padding: 21px; }
         .summary-image { width: 100%; height: 165px; margin-bottom: 20px; object-fit: cover; background: var(--panel-light); }
+        .summary-credit { margin: -13px 0 17px; color: var(--muted); font-size: 9px; }
+        .summary-credit a { text-decoration: underline; text-decoration-color: rgba(201,169,110,.55); text-underline-offset: 2px; }
         .summary-category { margin-bottom: 8px; color: var(--gold-light); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
         .summary-panel h2 { margin: 0 0 16px; font-size: 25px; }
         .summary-lines { display: grid; gap: 12px; margin: 0; }
@@ -144,6 +194,7 @@
             .field-wide { grid-column: auto; }
             .summary-image { height: 175px; }
             .confirmation { padding: 25px 20px; }
+            .journey-steps { grid-template-columns: 1fr; gap: 7px; margin-top: -15px; }
             .confirmation-summary { grid-template-columns: 1fr 1fr; }
             .footer-content { min-height: 110px; flex-wrap: wrap; padding: 20px 0; }
         }
@@ -176,23 +227,42 @@
             <section id="booking-page">
                 <div class="eyebrow" data-i18n="eyebrow">Un viaggio, a modo tuo</div>
                 <h1 data-i18n="title">La tua prenotazione</h1>
-                <p class="page-intro" data-i18n="intro">Scegli le date, indicaci dove raggiungerti e lasciaci i tuoi recapiti. Ti ricontatteremo per confermare disponibilità e dettagli.</p>
+                <p class="page-intro" data-i18n="intro">Inserisci i dettagli del viaggio: vedrai subito il totale. Il pagamento avviene in modo sicuro su Stripe; riceverai la ricevuta via email dopo la conferma del pagamento.</p>
+                <nav class="journey-steps" aria-label="Fasi della prenotazione">
+                    <div class="journey-step" aria-current="step"><strong>1</strong><span data-i18n="stepTrip">Dettagli del viaggio</span></div>
+                    <div class="journey-step"><strong>2</strong><span data-i18n="stepReview">Riepilogo e totale</span></div>
+                    <div class="journey-step"><strong>3</strong><span data-i18n="stepPayment">Pagamento sicuro</span></div>
+                </nav>
+                <div class="payment-status" id="payment-status" role="status" aria-live="polite" hidden></div>
+                <button class="payment-retry" id="retry-payment-check" type="button" data-i18n="verifyAgain" hidden>Verifica di nuovo</button>
 
                 <div class="booking-layout" id="booking-layout">
                     <section class="booking-panel">
                         <div class="panel-heading">
                             <h2 data-i18n="formTitle">Dettagli del viaggio</h2>
-                            <p data-i18n="formIntro">Completa i tuoi dati per preparare la richiesta.</p>
+                            <p data-i18n="formIntro">Inserisci i tuoi dati e controlla il riepilogo prima di procedere al pagamento.</p>
                         </div>
                         <form id="reservation-form">
                             <div class="fields">
                                 <div class="field">
                                     <label for="pickup-date" data-i18n="pickupDate">Data di ritiro</label>
-                                    <input id="pickup-date" name="pickup" type="date" required>
+                                    <div class="date-control">
+                                        <input class="date-entry" id="pickup-date" name="pickup" type="text" inputmode="numeric" autocomplete="off" placeholder="gg/mm/aaaa" required>
+                                        <button class="date-picker-button" type="button" data-picker="pickup-date-picker" data-i18n-aria="openPickupCalendar" aria-label="Apri il calendario per la data di ritiro">
+                                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 3.5v3M16.5 3.5v3M3.5 9h17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 12.5h2M14 12.5h2M8 16h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                                        </button>
+                                        <input id="pickup-date-picker" type="date" tabindex="-1" aria-hidden="true">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label for="return-date" data-i18n="returnDate">Data di riconsegna</label>
-                                    <input id="return-date" name="return" type="date" required>
+                                    <div class="date-control">
+                                        <input class="date-entry" id="return-date" name="return" type="text" inputmode="numeric" autocomplete="off" placeholder="gg/mm/aaaa" required>
+                                        <button class="date-picker-button" type="button" data-picker="return-date-picker" data-i18n-aria="openReturnCalendar" aria-label="Apri il calendario per la data di riconsegna">
+                                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 3.5v3M16.5 3.5v3M3.5 9h17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 12.5h2M14 12.5h2M8 16h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                                        </button>
+                                        <input id="return-date-picker" type="date" tabindex="-1" aria-hidden="true">
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label for="location" data-i18n="location">Luogo di ritiro</label>
@@ -203,13 +273,18 @@
                                         <option value="Venezia" data-i18n="cityVenice">Venezia</option>
                                     </select>
                                 </div>
+                                <fieldset class="field-wide color-field">
+                                    <legend data-i18n="colorLabel">Colore preferito</legend>
+                                    <div class="color-options" id="color-options" role="radiogroup" aria-label="Colore dell’auto"></div>
+                                    <p class="color-note" data-i18n="colorNote">Il colore scelto è una preferenza: disponibilità da confermare. Le foto mostrano esemplari reali del modello e possono avere una tinta diversa.</p>
+                                </fieldset>
                                 <div class="field">
                                     <label for="driver-name" data-i18n="name">Nome e cognome</label>
                                     <input id="driver-name" name="name" type="text" autocomplete="name" maxlength="100" required>
                                 </div>
                                 <div class="field">
                                     <label for="driver-email" data-i18n="email">Email</label>
-                                    <input id="driver-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+                                    <input id="driver-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required>
                                 </div>
                                 <div class="field">
                                     <label for="driver-phone" data-i18n="phone">Telefono</label>
@@ -220,32 +295,38 @@
                                     <textarea id="notes" name="notes" maxlength="500"></textarea>
                                 </div>
                             </div>
+                            <label class="payment-consent">
+                                <input type="checkbox" name="payment-consent" required>
+                                <span data-i18n="paymentConsent">Confermo i dettagli e comprendo che verrà addebitato il totale mostrato; la disponibilità del veicolo deve essere confermata separatamente dal concierge.</span>
+                            </label>
                             <p class="form-error" id="form-error" role="alert" aria-live="polite"></p>
-                            <button class="submit-button" type="submit" data-i18n="submit">Salva la richiesta</button>
-                            <p class="terms-note" data-i18n="privacyNote">La richiesta viene salvata solo in questo browser. Non vengono effettuati pagamenti né inviate prenotazioni automatiche.</p>
+                            <button class="submit-button" type="submit" data-i18n="submit">Procedi al pagamento sicuro</button>
+                            <p class="terms-note" data-i18n="privacyNote">Dopo il pagamento verrai reindirizzato qui e Stripe invierà la ricevuta all’indirizzo email inserito. Il totale addebitato è calcolato sulla tariffa giornaliera mostrata.</p>
                         </form>
                     </section>
 
                     <aside class="summary-panel" aria-label="Riepilogo prenotazione">
                         <img class="summary-image" id="car-image" src="" alt="">
+                        <p class="summary-credit" id="photo-credit"></p>
                         <div class="summary-category" id="car-category"></div>
                         <h2 id="car-name"></h2>
                         <dl class="summary-lines">
                             <div class="summary-line"><dt data-i18n="pickup">Ritiro</dt><dd id="summary-pickup">—</dd></div>
                             <div class="summary-line"><dt data-i18n="dropoff">Riconsegna</dt><dd id="summary-return">—</dd></div>
                             <div class="summary-line"><dt data-i18n="duration">Durata</dt><dd id="summary-duration">—</dd></div>
+                            <div class="summary-line"><dt data-i18n="colorLabel">Colore preferito</dt><dd id="summary-color">—</dd></div>
                             <div class="summary-line"><dt data-i18n="dailyRate">Tariffa giornaliera</dt><dd id="summary-rate"></dd></div>
                         </dl>
                         <hr class="summary-divider">
                         <div class="total-line"><span data-i18n="estimate">Stima del noleggio</span><span class="total-amount" id="summary-total"></span></div>
-                        <p class="summary-note" data-i18n="estimateNote">Stima indicativa. La disponibilità e il totale definitivo saranno confermati dal concierge.</p>
+                        <p class="summary-note" data-i18n="estimateNote">Importo totale calcolato sulle date e sulla tariffa giornaliera. Verifica i dettagli prima di pagare.</p>
                     </aside>
                 </div>
 
                 <section class="confirmation" id="confirmation" aria-live="polite" hidden>
-                    <div class="eyebrow" data-i18n="savedEyebrow">Richiesta salvata</div>
-                    <h2 data-i18n="savedTitle">Il tuo viaggio prende forma.</h2>
-                    <p data-i18n="savedCopy">La richiesta è salvata su questo dispositivo. Usa il riferimento per ritrovarla qui.</p>
+                    <div class="eyebrow" data-i18n="savedEyebrow">Pagamento confermato</div>
+                    <h2 data-i18n="savedTitle">Pagamento confermato. Richiesta ricevuta.</h2>
+                    <p data-i18n="savedCopy">Il pagamento è stato verificato. Stripe invierà la ricevuta all’indirizzo email usato per il pagamento. La disponibilità del veicolo viene confermata separatamente.</p>
                     <div class="reference" id="confirmation-reference"></div>
                     <div class="confirmation-summary" id="confirmation-summary"></div>
                     <div class="confirmation-actions">
@@ -253,7 +334,7 @@
                         <a class="button-secondary" id="email-booking" href="#" data-i18n="emailConcierge">Scrivi al concierge</a>
                         <button class="button-secondary" id="remove-booking" type="button" data-i18n="remove">Rimuovi dal dispositivo</button>
                     </div>
-                    <p class="confirmation-disclaimer" data-i18n="demoNote">Questa demo non invia la richiesta al noleggiatore e non conferma una prenotazione. Per inviarla, usa “Scrivi al concierge”.</p>
+                    <p class="confirmation-disclaimer" data-i18n="demoNote">Conserva il riferimento della prenotazione e la ricevuta inviata da Stripe.</p>
                 </section>
             </section>
         </div>
@@ -265,27 +346,95 @@
             <a href="mailto:concierge@veloura.it">concierge@veloura.it</a>
         </div>
     </footer>
+    <script src="vehicle-catalog.js"></script>
     <script>
         const vehicles = {
             "porsche-911": {
                 name: { it: "Porsche 911 Carrera", en: "Porsche 911 Carrera" },
                 category: { it: "Sportiva", en: "Sports car" },
                 price: 490,
-                image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=84"
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/2024_Porsche_911_992_Carrera.jpg/960px-2024_Porsche_911_992_Carrera.jpg",
+                photoSource: "https://commons.wikimedia.org/wiki/File:2024_Porsche_911_992_Carrera.jpg",
+                photoAuthor: "Calreyn88",
+                colors: [
+                    { id: "white", hex: "#e7e5dd", name: { it: "Carrara White Metallic", en: "Carrara White Metallic" } },
+                    { id: "black", hex: "#20211f", name: { it: "Jet Black Metallic", en: "Jet Black Metallic" } },
+                    { id: "red", hex: "#a51d2d", name: { it: "Guards Red", en: "Guards Red" } },
+                    { id: "blue", hex: "#1684d5", name: { it: "Shark Blue", en: "Shark Blue" } }
+                ]
             },
             "range-rover-sport": {
                 name: { it: "Range Rover Sport", en: "Range Rover Sport" },
                 category: { it: "SUV di lusso", en: "Luxury SUV" },
                 price: 390,
-                image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1000&q=84"
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Land_Rover_Range_Rover_Sport_L461_Carpathian_Grey_%281%29.jpg/960px-Land_Rover_Range_Rover_Sport_L461_Carpathian_Grey_%281%29.jpg",
+                photoSource: "https://commons.wikimedia.org/wiki/File:Land_Rover_Range_Rover_Sport_L461_Carpathian_Grey_(1).jpg",
+                photoAuthor: "Damian B Oh",
+                colors: [
+                    { id: "white", hex: "#e9e8e1", name: { it: "Fuji White", en: "Fuji White" } },
+                    { id: "black", hex: "#20211f", name: { it: "Santorini Black", en: "Santorini Black" } },
+                    { id: "grey", hex: "#777973", name: { it: "Carpathian Grey", en: "Carpathian Grey" } },
+                    { id: "blue", hex: "#244c74", name: { it: "Varesine Blue", en: "Varesine Blue" } }
+                ]
+            },
+            "porsche-cayenne": {
+                name: { it: "Porsche Cayenne", en: "Porsche Cayenne" },
+                category: { it: "SUV di lusso", en: "Luxury SUV" },
+                price: 420,
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Porsche_Cayenne_%28Hong_Kong%29_front%2C_Dongguan_13_June_2024.jpg/960px-Porsche_Cayenne_%28Hong_Kong%29_front%2C_Dongguan_13_June_2024.jpg",
+                photoSource: "https://commons.wikimedia.org/wiki/File:Porsche_Cayenne_(Hong_Kong)_front,_Dongguan_13_June_2024.jpg",
+                photoAuthor: "メイド理世",
+                colors: [
+                    { id: "white", hex: "#e9e7df", name: { it: "Carrara White", en: "Carrara White" } },
+                    { id: "black", hex: "#20211f", name: { it: "Chromite Black Metallic", en: "Chromite Black Metallic" } },
+                    { id: "grey", hex: "#777973", name: { it: "Crayon", en: "Crayon" } },
+                    { id: "blue", hex: "#253d5a", name: { it: "Montego Blue Metallic", en: "Montego Blue Metallic" } }
+                ]
+            },
+            "range-rover-velar": {
+                name: { it: "Range Rover Velar P250 SE", en: "Range Rover Velar P250 SE" },
+                category: { it: "SUV di lusso", en: "Luxury SUV" },
+                price: 350,
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Range_Rover_Velar_P250_SE_IMG_8831.jpg/960px-Range_Rover_Velar_P250_SE_IMG_8831.jpg",
+                photoSource: "https://commons.wikimedia.org/wiki/File:Range_Rover_Velar_P250_SE_IMG_8831.jpg",
+                photoAuthor: "Alexander-93",
+                colors: [
+                    { id: "white", hex: "#e9e8e1", name: { it: "Fuji White", en: "Fuji White" } },
+                    { id: "black", hex: "#20211f", name: { it: "Santorini Black", en: "Santorini Black" } },
+                    { id: "grey", hex: "#777973", name: { it: "Arroios Grey", en: "Arroios Grey" } },
+                    { id: "green", hex: "#4e594c", name: { it: "British Racing Green", en: "British Racing Green" } }
+                ]
+            },
+            "mercedes-amg-gt-r": {
+                name: { it: "Mercedes-AMG GT R", en: "Mercedes-AMG GT R" },
+                category: { it: "Sportiva", en: "Sports car" },
+                price: 690,
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-AMG_C190_GT_R_1X7A1632.jpg/960px-Mercedes-AMG_C190_GT_R_1X7A1632.jpg",
+                photoSource: "https://commons.wikimedia.org/wiki/File:Mercedes-AMG_C190_GT_R_1X7A1632.jpg",
+                photoAuthor: "Alexander-93",
+                colors: [
+                    { id: "green", hex: "#385d43", name: { it: "AMG Green Hell Magno", en: "AMG Green Hell Magno" } },
+                    { id: "black", hex: "#20211f", name: { it: "Obsidian Black Metallic", en: "Obsidian Black Metallic" } },
+                    { id: "grey", hex: "#777973", name: { it: "Selenite Grey Metallic", en: "Selenite Grey Metallic" } },
+                    { id: "red", hex: "#a51d2d", name: { it: "AMG Solar Beam", en: "AMG Solar Beam" } }
+                ]
             },
             "mercedes-s-class": {
                 name: { it: "Mercedes-Benz Classe S", en: "Mercedes-Benz S-Class" },
                 category: { it: "Eleganza", en: "Luxury saloon" },
                 price: 520,
-                image: "https://images.unsplash.com/photo-1502957291543-d85480254bf8?auto=format&fit=crop&w=1000&q=84"
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Mercedes-Benz_W223_IMG_3949.jpg/960px-Mercedes-Benz_W223_IMG_3949.jpg",
+                photoSource: "https://commons.wikimedia.org/wiki/File:Mercedes-Benz_W223_IMG_3949.jpg",
+                photoAuthor: "Alexander Migl",
+                colors: [
+                    { id: "white", hex: "#e7e6df", name: { it: "Polar White", en: "Polar White" } },
+                    { id: "black", hex: "#20211f", name: { it: "Obsidian Black Metallic", en: "Obsidian Black Metallic" } },
+                    { id: "silver", hex: "#a6a8aa", name: { it: "High-Tech Silver Metallic", en: "High-Tech Silver Metallic" } },
+                    { id: "blue", hex: "#283b54", name: { it: "Nautic Blue Metallic", en: "Nautic Blue Metallic" } }
+                ]
             }
         };
+        for (const vehicle of window.VELOURA_CATALOG) vehicles[vehicle.id] = vehicle;
         const words = {
             it: {
                 announcement: "Un’esperienza su misura. Ovunque ti porti la strada.", backCar: "← Torna all’auto",
@@ -293,26 +442,47 @@
                 missingCopy: "Il veicolo richiesto non è disponibile nella nostra flotta.",
                 cityMilan: "Milano", cityRome: "Roma", cityFlorence: "Firenze", cityVenice: "Venezia",
                 eyebrow: "Un viaggio, a modo tuo", title: "La tua prenotazione",
-                intro: "Scegli le date, indicaci dove raggiungerti e lasciaci i tuoi recapiti. Ti ricontatteremo per confermare disponibilità e dettagli.",
-                formTitle: "Dettagli del viaggio", formIntro: "Completa i tuoi dati per preparare la richiesta.",
+                intro: "Inserisci i dettagli del viaggio: vedrai subito il totale. Il pagamento avviene in modo sicuro su Stripe; riceverai la ricevuta via email dopo la conferma del pagamento.",
+                stepTrip: "Dettagli del viaggio", stepReview: "Riepilogo e totale", stepPayment: "Pagamento sicuro",
+                paymentConsent: "Confermo i dettagli e comprendo che verrà addebitato il totale mostrato; la disponibilità del veicolo deve essere confermata separatamente dal concierge.",
+                formTitle: "Dettagli del viaggio", formIntro: "Inserisci i tuoi dati e controlla il riepilogo prima di procedere al pagamento.",
                 pickupDate: "Data di ritiro", returnDate: "Data di riconsegna", location: "Luogo di ritiro",
+                openPickupCalendar: "Apri il calendario per la data di ritiro",
+                openReturnCalendar: "Apri il calendario per la data di riconsegna",
                 name: "Nome e cognome", email: "Email", phone: "Telefono",
-                notes: "Note per il concierge (facoltative)", submit: "Salva la richiesta",
-                privacyNote: "La richiesta viene salvata solo in questo browser. Non vengono effettuati pagamenti né inviate prenotazioni automatiche.",
+                notes: "Note per il concierge (facoltative)", submit: "Procedi al pagamento sicuro", checkoutLoading: "Apertura pagamento sicuro…",
+                colorLabel: "Colore preferito",
+                colorNote: "Il colore scelto è una preferenza: disponibilità da confermare. Le foto mostrano esemplari reali del modello e possono avere una tinta diversa.",
+                photoCredit: "Foto", colorGroup: "Scegli il colore preferito",
+                privacyNote: "Dopo il pagamento verrai reindirizzato qui e Stripe invierà la ricevuta all’indirizzo email inserito. Il totale addebitato è calcolato sulla tariffa giornaliera mostrata.",
                 pickup: "Ritiro", dropoff: "Riconsegna", duration: "Durata", dailyRate: "Tariffa giornaliera",
-                estimate: "Stima del noleggio", estimateNote: "Stima indicativa. La disponibilità e il totale definitivo saranno confermati dal concierge.",
-                savedEyebrow: "Richiesta salvata", savedTitle: "Il tuo viaggio prende forma.",
-                savedCopy: "La richiesta è salvata su questo dispositivo. Usa il riferimento per ritrovarla qui.",
+                estimate: "Totale noleggio", estimateNote: "Importo totale calcolato sulle date e sulla tariffa giornaliera. Verifica i dettagli prima di pagare.",
+                savedEyebrow: "Bozza non pagata", savedTitle: "La tua richiesta è ancora da completare.",
+                savedCopy: "Questa richiesta salvata in precedenza non è stata pagata. Rivedi i dati e procedi al pagamento sicuro per completarla.",
+                paidEyebrow: "Pagamento confermato", paidTitle: "Pagamento confermato. Richiesta ricevuta.",
+                paidCopy: "Il pagamento è stato verificato. Stripe invierà la ricevuta all’indirizzo email usato per il pagamento. La disponibilità del veicolo viene confermata separatamente.",
                 edit: "Modifica richiesta", emailConcierge: "Scrivi al concierge", remove: "Rimuovi dal dispositivo",
-                demoNote: "Questa demo non invia la richiesta al noleggiatore e non conferma una prenotazione. Per inviarla, usa “Scrivi al concierge”.",
+                demoNote: "Questa bozza non è stata inviata né pagata. Completa il pagamento per proseguire.",
+                checkoutError: "Non è stato possibile avviare il pagamento sicuro. Riprova tra poco.",
+                checkoutUnavailable: "Il pagamento online non è ancora configurato per questo sito. Contatta il concierge.",
+                checkoutCancelled: "Pagamento annullato: non è stato effettuato alcun addebito. Puoi modificare i dettagli e riprovare.",
+                verifyingPayment: "Verifica del pagamento in corso…",
+                verifyAgain: "Verifica di nuovo",
+                paymentNotCompleted: "Il pagamento non risulta completato. Se hai appena pagato, attendi qualche istante e riprova.",
+                paymentVerifiedError: "Non riusciamo a verificare il pagamento al momento. Non ripetere il pagamento: riprova a verificare o contatta il concierge.",
+                receiptEmail: "Ricevuta inviata a",
                 footerCopy: "© 2026 Veloura. L’eccellenza, in movimento.", perDay: "/ giorno",
                 day: "giorno", days: "giorni", selectDate: "Seleziona le date",
                 invalidDates: "La riconsegna deve essere successiva al ritiro.",
+                invalidDateFormat: "Inserisci una data valida nel formato GG/MM/AAAA, ad esempio 25/10/2026.",
+                pastDate: "La data di ritiro non può essere nel passato.",
                 emptyContact: "Inserisci nome, email e telefono validi.",
                 city: { Milano: "Milano", Roma: "Roma", Firenze: "Firenze", Venezia: "Venezia" },
                 refLabel: "Riferimento", dateLocale: "it-IT", currency: "EUR",
                 confirmCar: "Auto", confirmLocation: "Luogo", confirmDates: "Date", confirmTotal: "Totale stimato",
+                confirmColor: "Colore preferito", mailColor: "Colore richiesto",
                 mailSubject: "Richiesta noleggio Veloura", mailIntro: "Richiesta di disponibilità",
+                paidMailIntro: "Pagamento Veloura confermato. Richiesta di conferma disponibilità.",
                 mailName: "Nome", mailEmail: "Email", mailPhone: "Telefono", mailNotes: "Note",
                 removeConfirm: "Vuoi rimuovere dal dispositivo la richiesta salvata? Questa operazione non annulla un noleggio confermato."
             },
@@ -322,26 +492,47 @@
                 missingCopy: "The requested vehicle is not available in our collection.",
                 cityMilan: "Milan", cityRome: "Rome", cityFlorence: "Florence", cityVenice: "Venice",
                 eyebrow: "A journey, your way", title: "Your reservation",
-                intro: "Choose your dates, tell us where to meet you and leave your contact details. We’ll be in touch to confirm availability and details.",
-                formTitle: "Trip details", formIntro: "Enter your details to prepare your request.",
+                intro: "Enter your trip details to see the total. Payment is processed securely by Stripe; your email receipt arrives after payment is confirmed.",
+                stepTrip: "Trip details", stepReview: "Review and total", stepPayment: "Secure payment",
+                paymentConsent: "I confirm these details and understand that the displayed total will be charged; vehicle availability must be confirmed separately by the concierge.",
+                formTitle: "Trip details", formIntro: "Enter your details and review the summary before proceeding to payment.",
                 pickupDate: "Pick-up date", returnDate: "Return date", location: "Pick-up location",
+                openPickupCalendar: "Open pick-up date calendar",
+                openReturnCalendar: "Open return date calendar",
                 name: "Full name", email: "Email", phone: "Phone",
-                notes: "Notes for the concierge (optional)", submit: "Save request",
-                privacyNote: "Your request is saved only in this browser. No payment is taken and no booking is sent automatically.",
+                notes: "Notes for the concierge (optional)", submit: "Continue to secure payment", checkoutLoading: "Opening secure checkout…",
+                colorLabel: "Preferred colour",
+                colorNote: "Your colour choice is a preference, subject to availability. Photos show real examples of this model and may feature a different paint colour.",
+                photoCredit: "Photo", colorGroup: "Choose your preferred colour",
+                privacyNote: "After payment, you’ll return here and Stripe will email a receipt to the address entered. The charge is calculated from the displayed daily rate.",
                 pickup: "Pick-up", dropoff: "Drop-off", duration: "Duration", dailyRate: "Daily rate",
-                estimate: "Estimated rental", estimateNote: "Indicative estimate. The concierge will confirm availability and the final total.",
-                savedEyebrow: "Request saved", savedTitle: "Your journey is taking shape.",
-                savedCopy: "Your request is saved on this device. Use the reference to find it here.",
+                estimate: "Rental total", estimateNote: "Total calculated from your dates and the daily rate. Review the details before paying.",
+                savedEyebrow: "Unpaid draft", savedTitle: "Your enquiry still needs completing.",
+                savedCopy: "This previously saved enquiry has not been paid. Review the details and continue to secure payment to complete it.",
+                paidEyebrow: "Payment confirmed", paidTitle: "Payment confirmed. Enquiry received.",
+                paidCopy: "Your payment has been verified. Stripe will email a receipt to the address used for payment. Vehicle availability is confirmed separately.",
                 edit: "Edit request", emailConcierge: "Email the concierge", remove: "Remove from device",
-                demoNote: "This demo does not send your request to the rental company or confirm a booking. To send it, choose “Email the concierge”.",
+                demoNote: "This draft has not been sent or paid. Complete payment to continue.",
+                checkoutError: "We couldn't start secure checkout. Please try again shortly.",
+                checkoutUnavailable: "Online payment is not configured for this site yet. Please contact the concierge.",
+                checkoutCancelled: "Payment cancelled: you have not been charged. You can edit your details and try again.",
+                verifyingPayment: "Verifying your payment…",
+                verifyAgain: "Verify payment again",
+                paymentNotCompleted: "The payment is not marked as complete. If you just paid, wait a moment and verify again.",
+                paymentVerifiedError: "We can't verify the payment right now. Don't pay again: retry verification or contact the concierge.",
+                receiptEmail: "Receipt sent to",
                 footerCopy: "© 2026 Veloura. Excellence in motion.", perDay: "/ day",
                 day: "day", days: "days", selectDate: "Select your dates",
                 invalidDates: "The return date must be after the pick-up date.",
+                invalidDateFormat: "Enter a valid date in DD/MM/YYYY format, for example 25/10/2026.",
+                pastDate: "The pick-up date cannot be in the past.",
                 emptyContact: "Enter a valid name, email address and phone number.",
                 city: { Milano: "Milan", Roma: "Rome", Firenze: "Florence", Venezia: "Venice" },
                 refLabel: "Reference", dateLocale: "en-GB", currency: "EUR",
                 confirmCar: "Car", confirmLocation: "Location", confirmDates: "Dates", confirmTotal: "Estimated total",
+                confirmColor: "Preferred colour", mailColor: "Requested colour",
                 mailSubject: "Veloura rental enquiry", mailIntro: "Availability enquiry",
+                paidMailIntro: "Veloura payment confirmed. Please confirm vehicle availability.",
                 mailName: "Name", mailEmail: "Email", mailPhone: "Phone", mailNotes: "Notes",
                 removeConfirm: "Remove the saved request from this device? This does not cancel a confirmed rental."
             }
@@ -356,8 +547,13 @@
         const confirmation = document.getElementById("confirmation");
         const pickupInput = document.getElementById("pickup-date");
         const returnInput = document.getElementById("return-date");
+        const pickupPicker = document.getElementById("pickup-date-picker");
+        const returnPicker = document.getElementById("return-date-picker");
         const locationInput = document.getElementById("location");
+        const colorOptions = document.getElementById("color-options");
         const formError = document.getElementById("form-error");
+        const paymentStatus = document.getElementById("payment-status");
+        const retryPaymentCheck = document.getElementById("retry-payment-check");
         const languageButtons = document.querySelectorAll("[data-language]");
         const today = new Date();
         const todayString = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
@@ -365,13 +561,56 @@
 
         function formatDate(value) {
             if (!value) return "—";
-            return new Intl.DateTimeFormat(words[language].dateLocale, { day: "numeric", month: "short", year: "numeric" })
-                .format(new Date(`${value}T12:00:00`));
+            const [year, month, day] = value.split("-").map(Number);
+            return new Intl.DateTimeFormat(words[language].dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
+                .format(new Date(Date.UTC(year, month - 1, day)));
+        }
+
+        function parseDateInput(value) {
+            const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim());
+            if (!match) return "";
+            const [, day, month, year] = match;
+            const isoDate = `${year}-${month}-${day}`;
+            const timestamp = Date.parse(`${isoDate}T00:00:00.000Z`);
+            return Number.isFinite(timestamp) && new Date(timestamp).toISOString().slice(0, 10) === isoDate
+                ? isoDate
+                : "";
+        }
+
+        function formatDateEntry(input) {
+            const caret = input.selectionStart ?? input.value.length;
+            const digitsBeforeCaret = input.value.slice(0, caret).replace(/\D/g, "").length;
+            const digits = input.value.replace(/\D/g, "").slice(0, 8);
+            let formatted = digits.slice(0, 2);
+            if (digits.length > 2) formatted += `/${digits.slice(2, 4)}`;
+            if (digits.length > 4) formatted += `/${digits.slice(4)}`;
+            input.value = formatted;
+
+            if (digitsBeforeCaret === 0) {
+                input.setSelectionRange(0, 0);
+                return;
+            }
+            let position = 0;
+            let digitCount = 0;
+            while (position < formatted.length && digitCount < digitsBeforeCaret) {
+                if (/\d/.test(formatted[position])) digitCount += 1;
+                position += 1;
+            }
+            if ((digitCount === 2 || digitCount === 4) && formatted[position] === "/") position += 1;
+            input.setSelectionRange(position, position);
+        }
+
+        function formatDateInput(value) {
+            if (!value) return "";
+            const [year, month, day] = value.split("-");
+            return `${day}/${month}/${year}`;
         }
 
         function getDuration() {
-            if (!pickupInput.value || !returnInput.value) return 0;
-            return Math.round((new Date(`${returnInput.value}T12:00:00`) - new Date(`${pickupInput.value}T12:00:00`)) / 86400000);
+            const pickup = parseDateInput(pickupInput.value);
+            const dropoff = parseDateInput(returnInput.value);
+            if (!pickup || !dropoff) return 0;
+            return (Date.parse(`${dropoff}T00:00:00.000Z`) - Date.parse(`${pickup}T00:00:00.000Z`)) / 86400000;
         }
 
         function formatPrice(amount) {
@@ -380,17 +619,34 @@
             }).format(amount);
         }
 
+        function getSelectedColor() {
+            return vehicle.colors.find((color) => color.id === form.elements.color.value) || vehicle.colors[0];
+        }
+
+        function renderColorOptions(selectedId) {
+            const selected = selectedId || vehicle.colors[0].id;
+            colorOptions.innerHTML = vehicle.colors.map((color) => `
+                <label class="color-option">
+                    <input type="radio" name="color" value="${color.id}" ${color.id === selected ? "checked" : ""} required>
+                    <span class="color-swatch" style="background-color: ${color.hex}" aria-hidden="true"></span>
+                    <span>${color.name[language]}</span>
+                </label>`).join("");
+            colorOptions.setAttribute("aria-label", words[language].colorGroup);
+        }
+
         function updateSummary() {
             const duration = getDuration();
+            const pickup = parseDateInput(pickupInput.value);
             document.getElementById("summary-pickup").textContent =
-                `${formatDate(pickupInput.value)}${pickupInput.value ? ` · ${words[language].city[locationInput.value]}` : ""}`;
-            document.getElementById("summary-return").textContent = formatDate(returnInput.value);
+                `${formatDate(pickup)}${pickup ? ` · ${words[language].city[locationInput.value]}` : ""}`;
+            document.getElementById("summary-return").textContent = formatDate(parseDateInput(returnInput.value));
             document.getElementById("summary-duration").textContent = duration > 0
                 ? `${duration} ${duration === 1 ? words[language].day : words[language].days}`
                 : words[language].selectDate;
+            document.getElementById("summary-color").textContent = getSelectedColor().name[language];
             document.getElementById("summary-rate").textContent = `${formatPrice(vehicle.price)} ${words[language].perDay}`;
-            document.getElementById("summary-total").innerHTML = duration > 0
-                ? `${formatPrice(duration * vehicle.price)} <small>EUR</small>`
+            document.getElementById("summary-total").textContent = duration > 0
+                ? formatPrice(duration * vehicle.price)
                 : "—";
         }
 
@@ -398,17 +654,20 @@
             const text = words[language];
             const duration = record.duration;
             const dates = `${formatDate(record.pickup)} — ${formatDate(record.return)}`;
+            const color = vehicle.colors.find((option) => option.id === record.color) || vehicle.colors[0];
             document.getElementById("confirmation-reference").textContent = `${text.refLabel}: ${record.reference}`;
             document.getElementById("confirmation-summary").innerHTML = `
                 <div class="confirmation-item"><small>${text.confirmCar}</small><span>${vehicle.name[language]}</span></div>
                 <div class="confirmation-item"><small>${text.confirmLocation}</small><span>${text.city[record.location]}</span></div>
+                <div class="confirmation-item"><small>${text.confirmColor}</small><span>${color.name[language]}</span></div>
                 <div class="confirmation-item"><small>${text.confirmDates}</small><span>${dates} · ${duration} ${duration === 1 ? text.day : text.days}</span></div>
                 <div class="confirmation-item"><small>${text.confirmTotal}</small><span>${formatPrice(record.total)}</span></div>`;
 
             const mailBody = [
-                text.mailIntro,
+                record.paymentStatus === "paid" ? text.paidMailIntro : text.mailIntro,
                 `${text.confirmCar}: ${vehicle.name[language]}`,
                 `${text.confirmLocation}: ${text.city[record.location]}`,
+                `${text.mailColor}: ${color.name[language]}`,
                 `${text.confirmDates}: ${dates}`,
                 `${text.confirmTotal}: ${formatPrice(record.total)}`,
                 `${text.mailName}: ${record.name}`,
@@ -424,7 +683,101 @@
         function showSavedRequest(record) {
             layout.hidden = true;
             confirmation.hidden = false;
+            document.querySelector("#confirmation [data-i18n='savedEyebrow']").textContent = words[language].savedEyebrow;
+            document.querySelector("#confirmation [data-i18n='savedTitle']").textContent = words[language].savedTitle;
+            document.querySelector("#confirmation [data-i18n='savedCopy']").textContent = words[language].savedCopy;
+            document.querySelector("#confirmation [data-i18n='demoNote']").textContent = words[language].demoNote;
+            document.getElementById("edit-booking").hidden = false;
+            document.getElementById("remove-booking").hidden = false;
             formatConfirmation(record);
+        }
+
+        function showPaidConfirmation(record) {
+            record.paymentStatus = "paid";
+            localStorage.setItem(`veloura-reservation-${carId}`, JSON.stringify(record));
+            layout.hidden = true;
+            confirmation.hidden = false;
+            document.querySelector("#confirmation [data-i18n='savedEyebrow']").textContent = words[language].paidEyebrow;
+            document.querySelector("#confirmation [data-i18n='savedTitle']").textContent = words[language].paidTitle;
+            document.querySelector("#confirmation [data-i18n='savedCopy']").textContent =
+                `${words[language].paidCopy} ${words[language].receiptEmail}: ${record.email}`;
+            document.querySelector("#confirmation [data-i18n='demoNote']").textContent = words[language].demoNote;
+            document.getElementById("edit-booking").hidden = true;
+            document.getElementById("remove-booking").hidden = true;
+            const contactLink = document.getElementById("email-booking");
+            contactLink.textContent = words[language].emailConcierge;
+            formatConfirmation(record);
+            paymentStatus.hidden = true;
+            retryPaymentCheck.hidden = true;
+        }
+
+        async function verifyPayment(sessionId) {
+            const text = words[language];
+            paymentStatus.hidden = false;
+            paymentStatus.textContent = text.verifyingPayment;
+            retryPaymentCheck.hidden = true;
+            try {
+                const response = await fetch(`/api/checkout-session?session_id=${encodeURIComponent(sessionId)}`, {
+                    headers: { Accept: "application/json" }
+                });
+                if (!response.ok) throw new Error(`Payment verification returned ${response.status}.`);
+                const result = await response.json();
+                if (!result.paid || !result.booking || result.booking.carId !== carId) {
+                    paymentStatus.textContent = text.paymentNotCompleted;
+                    retryPaymentCheck.hidden = false;
+                    return;
+                }
+                showPaidConfirmation(result.booking);
+            } catch (error) {
+                console.error("Could not verify the payment:", error);
+                paymentStatus.textContent = text.paymentVerifiedError;
+                retryPaymentCheck.hidden = false;
+            }
+        }
+
+        async function startCheckout() {
+            const text = words[language];
+            const submitButton = form.querySelector("[type='submit']");
+            const data = new FormData(form);
+            const submitText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.setAttribute("aria-busy", "true");
+            submitButton.textContent = text.checkoutLoading;
+            formError.textContent = "";
+            try {
+                const response = await fetch("/api/create-checkout-session", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", Accept: "application/json" },
+                    body: JSON.stringify({
+                        carId,
+                        pickup: parseDateInput(data.get("pickup")),
+                        return: parseDateInput(data.get("return")),
+                        location: data.get("location"),
+                        color: data.get("color"),
+                        name: data.get("name").trim(),
+                        email: data.get("email").trim(),
+                        phone: data.get("phone").trim(),
+                        notes: data.get("notes").trim(),
+                        language
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    formError.textContent = response.status === 503 ? text.checkoutUnavailable : text.checkoutError;
+                    return;
+                }
+                if (typeof result.url !== "string" || !result.url.startsWith("https://checkout.stripe.com/")) {
+                    throw new Error("Stripe returned an invalid checkout URL.");
+                }
+                window.location.assign(result.url);
+            } catch (error) {
+                console.error("Could not start Stripe Checkout:", error);
+                formError.textContent = text.checkoutError;
+            } finally {
+                submitButton.disabled = false;
+                submitButton.removeAttribute("aria-busy");
+                submitButton.textContent = submitText;
+            }
         }
 
         function setLanguage(nextLanguage) {
@@ -437,17 +790,31 @@
             document.querySelectorAll("[data-i18n]").forEach((element) => {
                 element.textContent = words[language][element.dataset.i18n];
             });
+            document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
+                element.setAttribute("aria-label", words[language][element.dataset.i18nAria]);
+            });
+            pickupInput.placeholder = language === "it" ? "gg/mm/aaaa" : "dd/mm/yyyy";
+            returnInput.placeholder = language === "it" ? "gg/mm/aaaa" : "dd/mm/yyyy";
             languageButtons.forEach((button) => {
                 button.setAttribute("aria-pressed", String(button.dataset.language === language));
             });
+            document.querySelector(".journey-steps").setAttribute("aria-label",
+                language === "it" ? "Fasi della prenotazione" : "Booking steps");
             if (vehicle) {
                 document.getElementById("car-name").textContent = vehicle.name[language];
                 document.getElementById("car-category").textContent = vehicle.category[language];
                 document.getElementById("car-image").alt = vehicle.name[language];
+                document.getElementById("photo-credit").innerHTML =
+                    `${words[language].photoCredit}: <a href="${vehicle.photoSource}" target="_blank" rel="noopener">${vehicle.photoAuthor}</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>`;
                 document.getElementById("back-link").href = `vehicle.html?car=${encodeURIComponent(carId)}`;
+                renderColorOptions(getSelectedColor().id);
                 updateSummary();
                 const saved = localStorage.getItem(`veloura-reservation-${carId}`);
-                if (saved && !confirmation.hidden) formatConfirmation(JSON.parse(saved));
+                if (saved && !confirmation.hidden) {
+                    const record = JSON.parse(saved);
+                    if (record.paymentStatus === "paid") showPaidConfirmation(record);
+                    else showSavedRequest(record);
+                }
             }
         }
 
@@ -460,26 +827,82 @@
             document.getElementById("car-image").src = vehicle.image;
             document.getElementById("car-name").textContent = vehicle.name[language];
             document.getElementById("car-category").textContent = vehicle.category[language];
-            pickupInput.min = todayString;
-            returnInput.min = todayString;
+            document.getElementById("photo-credit").innerHTML =
+                `${words[language].photoCredit}: <a href="${vehicle.photoSource}" target="_blank" rel="noopener">${vehicle.photoAuthor}</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>`;
+            renderColorOptions();
+            pickupPicker.min = todayString;
+            returnPicker.min = todayString;
 
-            pickupInput.addEventListener("change", () => {
-                returnInput.min = pickupInput.value || todayString;
-                if (returnInput.value && returnInput.value <= pickupInput.value) returnInput.value = "";
-                formError.textContent = "";
-                updateSummary();
+            [pickupInput, returnInput].forEach((input) => {
+                input.addEventListener("keydown", (event) => {
+                    const position = input.selectionStart;
+                    if (event.key === "Backspace" && position === input.selectionEnd && input.value[position - 1] === "/") {
+                        input.setSelectionRange(position - 1, position - 1);
+                    } else if (event.key === "Delete" && position === input.selectionEnd && input.value[position] === "/") {
+                        input.setSelectionRange(position + 1, position + 1);
+                    }
+                });
+                input.addEventListener("input", () => formatDateEntry(input));
             });
-            returnInput.addEventListener("change", () => {
+
+            function syncPickupDate() {
+                const pickup = parseDateInput(pickupInput.value);
+                pickupPicker.value = pickup && pickup >= todayString ? pickup : "";
+                returnPicker.min = pickup && pickup >= todayString ? pickup : todayString;
+                const dropoff = parseDateInput(returnInput.value);
+                if (dropoff && pickup && dropoff <= pickup) {
+                    returnInput.value = "";
+                    returnPicker.value = "";
+                }
                 formError.textContent = "";
                 updateSummary();
+            }
+
+            function syncReturnDate() {
+                const dropoff = parseDateInput(returnInput.value);
+                returnPicker.value = dropoff && dropoff >= returnPicker.min ? dropoff : "";
+                formError.textContent = "";
+                updateSummary();
+            }
+
+            pickupInput.addEventListener("input", syncPickupDate);
+            pickupInput.addEventListener("change", syncPickupDate);
+            returnInput.addEventListener("input", syncReturnDate);
+            returnInput.addEventListener("change", syncReturnDate);
+            pickupPicker.addEventListener("change", () => {
+                pickupInput.value = formatDateInput(pickupPicker.value);
+                syncPickupDate();
+                returnInput.focus();
+            });
+            returnPicker.addEventListener("change", () => {
+                returnInput.value = formatDateInput(returnPicker.value);
+                syncReturnDate();
+            });
+            document.querySelectorAll(".date-picker-button").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const picker = document.getElementById(button.dataset.picker);
+                    if (typeof picker.showPicker === "function") picker.showPicker();
+                    else picker.click();
+                });
             });
             locationInput.addEventListener("change", updateSummary);
+            colorOptions.addEventListener("change", updateSummary);
             form.addEventListener("input", () => { formError.textContent = ""; });
 
-            form.addEventListener("submit", (event) => {
+            form.addEventListener("submit", async (event) => {
                 event.preventDefault();
                 if (!form.reportValidity()) return;
                 const duration = getDuration();
+                const pickup = parseDateInput(pickupInput.value);
+                const dropoff = parseDateInput(returnInput.value);
+                if (!pickup || !dropoff) {
+                    formError.textContent = words[language].invalidDateFormat;
+                    return;
+                }
+                if (pickup < todayString) {
+                    formError.textContent = words[language].pastDate;
+                    return;
+                }
                 if (duration < 1) {
                     formError.textContent = words[language].invalidDates;
                     return;
@@ -492,32 +915,19 @@
                     formError.textContent = words[language].emptyContact;
                     return;
                 }
-                const record = {
-                    reference: `VL-${Date.now().toString(36).toUpperCase()}`,
-                    carId,
-                    pickup: data.get("pickup"),
-                    return: data.get("return"),
-                    location: data.get("location"),
-                    name,
-                    email,
-                    phone,
-                    notes: data.get("notes").trim(),
-                    duration,
-                    total: duration * vehicle.price,
-                    createdAt: new Date().toISOString()
-                };
-                localStorage.setItem(`veloura-reservation-${carId}`, JSON.stringify(record));
                 formError.textContent = "";
-                showSavedRequest(record);
+                await startCheckout();
             });
 
             document.getElementById("edit-booking").addEventListener("click", () => {
                 const record = JSON.parse(localStorage.getItem(`veloura-reservation-${carId}`));
                 if (!record) return;
-                pickupInput.value = record.pickup;
-                returnInput.min = record.pickup;
-                returnInput.value = record.return;
+                pickupInput.value = formatDateInput(record.pickup);
+                returnInput.value = formatDateInput(record.return);
+                syncPickupDate();
+                syncReturnDate();
                 locationInput.value = record.location;
+                renderColorOptions(record.color);
                 form.elements.name.value = record.name;
                 form.elements.email.value = record.email;
                 form.elements.phone.value = record.phone;
@@ -534,22 +944,49 @@
                 confirmation.hidden = true;
                 layout.hidden = false;
                 form.reset();
-                returnInput.min = todayString;
+                renderColorOptions();
+                pickupPicker.value = "";
+                returnPicker.value = "";
+                returnPicker.min = todayString;
                 formError.textContent = "";
                 updateSummary();
             });
 
-            const savedRequest = localStorage.getItem(`veloura-reservation-${carId}`);
-            if (savedRequest) {
-                const record = JSON.parse(savedRequest);
-                if (record.carId === carId) showSavedRequest(record);
-                else localStorage.removeItem(`veloura-reservation-${carId}`);
+            const paymentParams = new URLSearchParams(window.location.search);
+            if (paymentParams.get("payment") === "success") {
+                const sessionId = paymentParams.get("session_id");
+                if (sessionId) verifyPayment(sessionId);
+                else {
+                    paymentStatus.hidden = false;
+                    paymentStatus.textContent = words[language].paymentVerifiedError;
+                    retryPaymentCheck.hidden = false;
+                }
+            } else if (paymentParams.get("payment") === "cancelled") {
+                paymentStatus.hidden = false;
+                paymentStatus.textContent = words[language].checkoutCancelled;
+                window.history.replaceState({}, "", `reservation.html?car=${encodeURIComponent(carId)}`);
+            } else {
+                const savedRequest = localStorage.getItem(`veloura-reservation-${carId}`);
+                if (savedRequest) {
+                    const record = JSON.parse(savedRequest);
+                    if (record.carId === carId) {
+                        if (record.paymentStatus === "paid") showPaidConfirmation(record);
+                        else showSavedRequest(record);
+                    } else {
+                        localStorage.removeItem(`veloura-reservation-${carId}`);
+                    }
+                }
             }
             updateSummary();
         }
 
         languageButtons.forEach((button) => button.addEventListener("click", () => setLanguage(button.dataset.language)));
+        retryPaymentCheck.addEventListener("click", () => {
+            const sessionId = new URLSearchParams(window.location.search).get("session_id");
+            if (sessionId) verifyPayment(sessionId);
+        });
         setLanguage(language);
     </script>
+    <script src="concierge.js" defer></script>
 </body>
 </html>
