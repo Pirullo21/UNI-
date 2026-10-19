@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10110f">
+    <meta name="description" content="Prepara la tua richiesta di noleggio Veloura e consulta il riepilogo della prenotazione.">
+    <title>Veloura — Prenotazione</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+            --ink: #10110f;
+            --panel: #171815;
+            --panel-light: #20211d;
+            --cream: #f2efe8;
+            --muted: #aaa99f;
+            --gold: #c9a96e;
+            --gold-light: #dfc590;
+            --line: rgba(242,239,232,.12);
+            --serif: "Playfair Display", Georgia, serif;
+            --sans: "DM Sans", Arial, sans-serif;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--ink); color: var(--cream); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+        a { color: inherit; text-decoration: none; }
+        button, input, select, textarea { font: inherit; }
+        .announcement { min-height: 36px; display: grid; place-items: center; padding: 7px 18px; background: var(--gold); color: #171611; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-align: center; text-transform: uppercase; }
+        .site-header { position: absolute; z-index: 5; top: 36px; left: 0; width: 100%; border-bottom: 1px solid rgba(255,255,255,.17); }
+        .nav-wrap { width: min(1280px, calc(100% - 80px)); height: 88px; margin: auto; display: flex; align-items: center; justify-content: space-between; }
+        .brand { display: inline-flex; align-items: center; gap: 12px; font-family: var(--serif); font-size: 23px; letter-spacing: .13em; }
+        .brand-mark { width: 29px; height: 29px; display: grid; place-items: center; border: 1px solid var(--gold); color: var(--gold-light); font-family: var(--serif); font-size: 17px; font-style: italic; }
+        .nav-right { display: flex; align-items: center; gap: 27px; }
+        .back-link, .language-button { color: rgba(255,255,255,.82); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+        .back-link:hover, .language-button:hover { color: var(--gold-light); }
+        .language-switch { display: flex; align-items: center; gap: 7px; }
+        .language-button { padding: 7px 2px; border: 0; background: transparent; color: rgba(255,255,255,.52); cursor: pointer; }
+        .language-button[aria-pressed="true"] { color: var(--gold-light); }
+        .language-divider { color: rgba(255,255,255,.3); font-size: 11px; }
+        main { min-height: calc(100vh - 130px); padding: 180px 0 90px; }
+        .page-container { width: min(1120px, calc(100% - 80px)); margin: auto; }
+        .eyebrow { display: flex; align-items: center; gap: 13px; color: var(--gold-light); font-size: 10px; font-weight: 600; letter-spacing: .23em; text-transform: uppercase; }
+        .eyebrow::before { width: 31px; height: 1px; background: var(--gold); content: ""; }
+        h1, h2, h3, p { margin-top: 0; }
+        h1, h2 { font-family: var(--serif); font-weight: 500; letter-spacing: -.035em; }
+        h1 { margin: 17px 0 11px; font-size: clamp(44px, 6vw, 66px); }
+        .page-intro { margin-bottom: 39px; color: var(--muted); font-size: 13px; line-height: 1.8; }
+        .booking-layout { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, .8fr); align-items: start; gap: 23px; }
+        .booking-panel, .summary-panel { background: var(--panel); border: 1px solid rgba(255,255,255,.08); }
+        .booking-panel { padding: 29px; }
+        .panel-heading { margin-bottom: 24px; }
+        .panel-heading h2 { margin: 0 0 7px; font-size: 27px; }
+        .panel-heading p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+        .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 17px 14px; }
+        .field { min-width: 0; }
+        .field-wide { grid-column: 1 / -1; }
+        .field label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 9px; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
+        .field input, .field select, .field textarea {
+            width: 100%;
+            min-height: 45px;
+            padding: 11px 12px;
+            border: 1px solid var(--line);
+            border-radius: 0;
+            outline: none;
+            background: var(--panel-light);
+            color: var(--cream);
+            font-size: 12px;
+        }
+        .field textarea { min-height: 85px; resize: vertical; }
+        .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); }
+        .field input::placeholder, .field textarea::placeholder { color: #77776f; }
+        .field option { background: var(--panel); }
+        .form-error { min-height: 20px; margin: 13px 0 0; color: #f0a398; font-size: 11px; }
+        .submit-button, .button-secondary {
+            display: inline-flex;
+            min-height: 47px;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            border: 1px solid var(--gold);
+            cursor: pointer;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-align: center;
+            text-transform: uppercase;
+            transition: background .2s, color .2s;
+        }
+        .submit-button { width: 100%; background: var(--gold); color: #171611; }
+        .submit-button:hover { background: transparent; color: var(--gold-light); }
+        .button-secondary { background: transparent; color: var(--gold-light); }
+        .button-secondary:hover { background: var(--gold); color: #171611; }
+        .terms-note { margin: 13px 0 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+        .summary-panel { position: sticky; top: 22px; padding: 21px; }
+        .summary-image { width: 100%; height: 165px; margin-bottom: 20px; object-fit: cover; background: var(--panel-light); }
+        .summary-category { margin-bottom: 8px; color: var(--gold-light); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
+        .summary-panel h2 { margin: 0 0 16px; font-size: 25px; }
+        .summary-lines { display: grid; gap: 12px; margin: 0; }
+        .summary-line { display: flex; justify-content: space-between; gap: 15px; font-size: 11px; }
+        .summary-line dt { color: var(--muted); }
+        .summary-line dd { margin: 0; text-align: right; }
+        .summary-divider { height: 1px; margin: 17px 0; border: 0; background: var(--line); }
+        .total-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+        .total-line span:first-child { color: var(--muted); font-size: 11px; }
+        .total-amount { color: var(--gold-light); font-family: var(--serif); font-size: 25px; }
+        .total-amount small { color: var(--muted); font-family: var(--sans); font-size: 9px; }
+        .summary-note { margin: 13px 0 0; color: var(--muted); font-size: 9px; line-height: 1.65; }
+        .confirmation { padding: 35px; background: var(--panel); border: 1px solid rgba(201,169,110,.35); }
+        .confirmation h2 { margin: 13px 0 9px; font-size: 35px; }
+        .confirmation > p { color: var(--muted); font-size: 12px; line-height: 1.8; }
+        .reference { display: inline-block; margin: 8px 0 20px; padding: 11px 14px; border: 1px solid var(--line); color: var(--gold-light); font-size: 13px; letter-spacing: .1em; }
+        .confirmation-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; padding: 19px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+        .confirmation-item small { display: block; margin-bottom: 6px; color: var(--muted); font-size: 9px; letter-spacing: .13em; text-transform: uppercase; }
+        .confirmation-item span { font-size: 12px; }
+        .confirmation-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 21px; }
+        .confirmation-disclaimer { margin: 17px 0 0 !important; font-size: 10px !important; }
+        .detail-footer { border-top: 1px solid var(--line); }
+        .footer-content { width: min(1280px, calc(100% - 80px)); min-height: 92px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; color: var(--muted); font-size: 10px; }
+        .footer-content .brand { color: var(--cream); font-size: 17px; }
+        .not-found { padding: 100px 0; }
+        .not-found p { color: var(--muted); }
+        [hidden] { display: none !important; }
+        @media (max-width: 780px) {
+            .nav-wrap, .footer-content { width: calc(100% - 40px); }
+            .nav-wrap { height: 70px; }
+            .site-header { top: 33px; }
+            .announcement { min-height: 33px; font-size: 8px; }
+            .brand { gap: 9px; font-size: 18px; }
+            .brand-mark { width: 25px; height: 25px; font-size: 15px; }
+            .nav-right { gap: 12px; }
+            .back-link, .language-button { font-size: 8px; letter-spacing: .08em; }
+            .language-switch { gap: 5px; }
+            main { padding: 145px 0 60px; }
+            .page-container { width: calc(100% - 40px); }
+            .booking-layout { grid-template-columns: 1fr; }
+            .summary-panel { position: static; grid-row: 1; }
+            .summary-image { height: 220px; }
+        }
+        @media (max-width: 520px) {
+            .booking-panel { padding: 22px 17px; }
+            .fields { grid-template-columns: 1fr; gap: 14px; }
+            .field-wide { grid-column: auto; }
+            .summary-image { height: 175px; }
+            .confirmation { padding: 25px 20px; }
+            .confirmation-summary { grid-template-columns: 1fr 1fr; }
+            .footer-content { min-height: 110px; flex-wrap: wrap; padding: 20px 0; }
+        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+    </style>
+</head>
+<body>
+    <div class="announcement" data-i18n="announcement">Un’esperienza su misura. Ovunque ti porti la strada.</div>
+    <header class="site-header">
+        <div class="nav-wrap">
+            <a class="brand" href="index.html" aria-label="Veloura home"><span class="brand-mark">V</span>VELOURA</a>
+            <div class="nav-right">
+                <a class="back-link" id="back-link" href="index.html#fleet" data-i18n="backCar">← Torna all’auto</a>
+                <div class="language-switch" aria-label="Seleziona la lingua">
+                    <button class="language-button" type="button" data-language="it" aria-pressed="true">IT</button>
+                    <span class="language-divider">/</span>
+                    <button class="language-button" type="button" data-language="en" aria-pressed="false">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="page-container">
+            <section id="invalid-car" class="not-found" hidden>
+                <div class="eyebrow">VELOURA</div>
+                <h1 data-i18n="missingTitle">Auto non trovata</h1>
+                <p data-i18n="missingCopy">Il veicolo richiesto non è disponibile nella nostra flotta.</p>
+                <a class="button-secondary" href="index.html#fleet" data-i18n="backFleet">Torna alla flotta</a>
+            </section>
+            <section id="booking-page">
+                <div class="eyebrow" data-i18n="eyebrow">Un viaggio, a modo tuo</div>
+                <h1 data-i18n="title">La tua prenotazione</h1>
+                <p class="page-intro" data-i18n="intro">Scegli le date, indicaci dove raggiungerti e lasciaci i tuoi recapiti. Ti ricontatteremo per confermare disponibilità e dettagli.</p>
+
+                <div class="booking-layout" id="booking-layout">
+                    <section class="booking-panel">
+                        <div class="panel-heading">
+                            <h2 data-i18n="formTitle">Dettagli del viaggio</h2>
+                            <p data-i18n="formIntro">Completa i tuoi dati per preparare la richiesta.</p>
+                        </div>
+                        <form id="reservation-form">
+                            <div class="fields">
+                                <div class="field">
+                                    <label for="pickup-date" data-i18n="pickupDate">Data di ritiro</label>
+                                    <input id="pickup-date" name="pickup" type="date" required>
+                                </div>
+                                <div class="field">
+                                    <label for="return-date" data-i18n="returnDate">Data di riconsegna</label>
+                                    <input id="return-date" name="return" type="date" required>
+                                </div>
+                                <div class="field">
+                                    <label for="location" data-i18n="location">Luogo di ritiro</label>
+                                    <select id="location" name="location" required>
+                                        <option value="Milano" data-i18n="cityMilan">Milano</option>
+                                        <option value="Roma" data-i18n="cityRome">Roma</option>
+                                        <option value="Firenze" data-i18n="cityFlorence">Firenze</option>
+                                        <option value="Venezia" data-i18n="cityVenice">Venezia</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label for="driver-name" data-i18n="name">Nome e cognome</label>
+                                    <input id="driver-name" name="name" type="text" autocomplete="name" maxlength="100" required>
+                                </div>
+                                <div class="field">
+                                    <label for="driver-email" data-i18n="email">Email</label>
+                                    <input id="driver-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+                                </div>
+                                <div class="field">
+                                    <label for="driver-phone" data-i18n="phone">Telefono</label>
+                                    <input id="driver-phone" name="phone" type="tel" autocomplete="tel" maxlength="30" required>
+                                </div>
+                                <div class="field field-wide">
+                                    <label for="notes" data-i18n="notes">Note per il concierge (facoltative)</label>
+                                    <textarea id="notes" name="notes" maxlength="500"></textarea>
+                                </div>
+                            </div>
+                            <p class="form-error" id="form-error" role="alert" aria-live="polite"></p>
+                            <button class="submit-button" type="submit" data-i18n="submit">Salva la richiesta</button>
+                            <p class="terms-note" data-i18n="privacyNote">La richiesta viene salvata solo in questo browser. Non vengono effettuati pagamenti né inviate prenotazioni automatiche.</p>
+                        </form>
+                    </section>
+
+                    <aside class="summary-panel" aria-label="Riepilogo prenotazione">
+                        <img class="summary-image" id="car-image" src="" alt="">
+                        <div class="summary-category" id="car-category"></div>
+                        <h2 id="car-name"></h2>
+                        <dl class="summary-lines">
+                            <div class="summary-line"><dt data-i18n="pickup">Ritiro</dt><dd id="summary-pickup">—</dd></div>
+                            <div class="summary-line"><dt data-i18n="dropoff">Riconsegna</dt><dd id="summary-return">—</dd></div>
+                            <div class="summary-line"><dt data-i18n="duration">Durata</dt><dd id="summary-duration">—</dd></div>
+                            <div class="summary-line"><dt data-i18n="dailyRate">Tariffa giornaliera</dt><dd id="summary-rate"></dd></div>
+                        </dl>
+                        <hr class="summary-divider">
+                        <div class="total-line"><span data-i18n="estimate">Stima del noleggio</span><span class="total-amount" id="summary-total"></span></div>
+                        <p class="summary-note" data-i18n="estimateNote">Stima indicativa. La disponibilità e il totale definitivo saranno confermati dal concierge.</p>
+                    </aside>
+                </div>
+
+                <section class="confirmation" id="confirmation" aria-live="polite" hidden>
+                    <div class="eyebrow" data-i18n="savedEyebrow">Richiesta salvata</div>
+                    <h2 data-i18n="savedTitle">Il tuo viaggio prende forma.</h2>
+                    <p data-i18n="savedCopy">La richiesta è salvata su questo dispositivo. Usa il riferimento per ritrovarla qui.</p>
+                    <div class="reference" id="confirmation-reference"></div>
+                    <div class="confirmation-summary" id="confirmation-summary"></div>
+                    <div class="confirmation-actions">
+                        <button class="button-secondary" id="edit-booking" type="button" data-i18n="edit">Modifica richiesta</button>
+                        <a class="button-secondary" id="email-booking" href="#" data-i18n="emailConcierge">Scrivi al concierge</a>
+                        <button class="button-secondary" id="remove-booking" type="button" data-i18n="remove">Rimuovi dal dispositivo</button>
+                    </div>
+                    <p class="confirmation-disclaimer" data-i18n="demoNote">Questa demo non invia la richiesta al noleggiatore e non conferma una prenotazione. Per inviarla, usa “Scrivi al concierge”.</p>
+                </section>
+            </section>
+        </div>
+    </main>
+    <footer class="detail-footer">
+        <div class="footer-content">
+            <a class="brand" href="index.html"><span class="brand-mark">V</span>VELOURA</a>
+            <span data-i18n="footerCopy">© 2026 Veloura. L’eccellenza, in movimento.</span>
+            <a href="mailto:concierge@veloura.it">concierge@veloura.it</a>
+        </div>
+    </footer>
+    <script>
+        const vehicles = {
+            "porsche-911": {
+                name: { it: "Porsche 911 Carrera", en: "Porsche 911 Carrera" },
+                category: { it: "Sportiva", en: "Sports car" },
+                price: 490,
+                image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=84"
+            },
+            "range-rover-sport": {
+                name: { it: "Range Rover Sport", en: "Range Rover Sport" },
+                category: { it: "SUV di lusso", en: "Luxury SUV" },
+                price: 390,
+                image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1000&q=84"
+            },
+            "mercedes-s-class": {
+                name: { it: "Mercedes-Benz Classe S", en: "Mercedes-Benz S-Class" },
+                category: { it: "Eleganza", en: "Luxury saloon" },
+                price: 520,
+                image: "https://images.unsplash.com/photo-1502957291543-d85480254bf8?auto=format&fit=crop&w=1000&q=84"
+            }
+        };
+        const words = {
+            it: {
+                announcement: "Un’esperienza su misura. Ovunque ti porti la strada.", backCar: "← Torna all’auto",
+                backFleet: "Torna alla flotta", missingTitle: "Auto non trovata",
+                missingCopy: "Il veicolo richiesto non è disponibile nella nostra flotta.",
+                cityMilan: "Milano", cityRome: "Roma", cityFlorence: "Firenze", cityVenice: "Venezia",
+                eyebrow: "Un viaggio, a modo tuo", title: "La tua prenotazione",
+                intro: "Scegli le date, indicaci dove raggiungerti e lasciaci i tuoi recapiti. Ti ricontatteremo per confermare disponibilità e dettagli.",
+                formTitle: "Dettagli del viaggio", formIntro: "Completa i tuoi dati per preparare la richiesta.",
+                pickupDate: "Data di ritiro", returnDate: "Data di riconsegna", location: "Luogo di ritiro",
+                name: "Nome e cognome", email: "Email", phone: "Telefono",
+                notes: "Note per il concierge (facoltative)", submit: "Salva la richiesta",
+                privacyNote: "La richiesta viene salvata solo in questo browser. Non vengono effettuati pagamenti né inviate prenotazioni automatiche.",
+                pickup: "Ritiro", dropoff: "Riconsegna", duration: "Durata", dailyRate: "Tariffa giornaliera",
+                estimate: "Stima del noleggio", estimateNote: "Stima indicativa. La disponibilità e il totale definitivo saranno confermati dal concierge.",
+                savedEyebrow: "Richiesta salvata", savedTitle: "Il tuo viaggio prende forma.",
+                savedCopy: "La richiesta è salvata su questo dispositivo. Usa il riferimento per ritrovarla qui.",
+                edit: "Modifica richiesta", emailConcierge: "Scrivi al concierge", remove: "Rimuovi dal dispositivo",
+                demoNote: "Questa demo non invia la richiesta al noleggiatore e non conferma una prenotazione. Per inviarla, usa “Scrivi al concierge”.",
+                footerCopy: "© 2026 Veloura. L’eccellenza, in movimento.", perDay: "/ giorno",
+                day: "giorno", days: "giorni", selectDate: "Seleziona le date",
+                invalidDates: "La riconsegna deve essere successiva al ritiro.",
+                emptyContact: "Inserisci nome, email e telefono validi.",
+                city: { Milano: "Milano", Roma: "Roma", Firenze: "Firenze", Venezia: "Venezia" },
+                refLabel: "Riferimento", dateLocale: "it-IT", currency: "EUR",
+                confirmCar: "Auto", confirmLocation: "Luogo", confirmDates: "Date", confirmTotal: "Totale stimato",
+                mailSubject: "Richiesta noleggio Veloura", mailIntro: "Richiesta di disponibilità",
+                mailName: "Nome", mailEmail: "Email", mailPhone: "Telefono", mailNotes: "Note",
+                removeConfirm: "Vuoi rimuovere dal dispositivo la richiesta salvata? Questa operazione non annulla un noleggio confermato."
+            },
+            en: {
+                announcement: "A tailor-made experience. Wherever the road takes you.", backCar: "← Back to the car",
+                backFleet: "Return to the collection", missingTitle: "Vehicle not found",
+                missingCopy: "The requested vehicle is not available in our collection.",
+                cityMilan: "Milan", cityRome: "Rome", cityFlorence: "Florence", cityVenice: "Venice",
+                eyebrow: "A journey, your way", title: "Your reservation",
+                intro: "Choose your dates, tell us where to meet you and leave your contact details. We’ll be in touch to confirm availability and details.",
+                formTitle: "Trip details", formIntro: "Enter your details to prepare your request.",
+                pickupDate: "Pick-up date", returnDate: "Return date", location: "Pick-up location",
+                name: "Full name", email: "Email", phone: "Phone",
+                notes: "Notes for the concierge (optional)", submit: "Save request",
+                privacyNote: "Your request is saved only in this browser. No payment is taken and no booking is sent automatically.",
+                pickup: "Pick-up", dropoff: "Drop-off", duration: "Duration", dailyRate: "Daily rate",
+                estimate: "Estimated rental", estimateNote: "Indicative estimate. The concierge will confirm availability and the final total.",
+                savedEyebrow: "Request saved", savedTitle: "Your journey is taking shape.",
+                savedCopy: "Your request is saved on this device. Use the reference to find it here.",
+                edit: "Edit request", emailConcierge: "Email the concierge", remove: "Remove from device",
+                demoNote: "This demo does not send your request to the rental company or confirm a booking. To send it, choose “Email the concierge”.",
+                footerCopy: "© 2026 Veloura. Excellence in motion.", perDay: "/ day",
+                day: "day", days: "days", selectDate: "Select your dates",
+                invalidDates: "The return date must be after the pick-up date.",
+                emptyContact: "Enter a valid name, email address and phone number.",
+                city: { Milano: "Milan", Roma: "Rome", Firenze: "Florence", Venezia: "Venice" },
+                refLabel: "Reference", dateLocale: "en-GB", currency: "EUR",
+                confirmCar: "Car", confirmLocation: "Location", confirmDates: "Dates", confirmTotal: "Estimated total",
+                mailSubject: "Veloura rental enquiry", mailIntro: "Availability enquiry",
+                mailName: "Name", mailEmail: "Email", mailPhone: "Phone", mailNotes: "Notes",
+                removeConfirm: "Remove the saved request from this device? This does not cancel a confirmed rental."
+            }
+        };
+
+        const carId = new URLSearchParams(window.location.search).get("car");
+        const vehicle = vehicles[carId];
+        const bookingPage = document.getElementById("booking-page");
+        const invalidPage = document.getElementById("invalid-car");
+        const form = document.getElementById("reservation-form");
+        const layout = document.getElementById("booking-layout");
+        const confirmation = document.getElementById("confirmation");
+        const pickupInput = document.getElementById("pickup-date");
+        const returnInput = document.getElementById("return-date");
+        const locationInput = document.getElementById("location");
+        const formError = document.getElementById("form-error");
+        const languageButtons = document.querySelectorAll("[data-language]");
+        const today = new Date();
+        const todayString = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+        let language = localStorage.getItem("veloura-language") === "en" ? "en" : "it";
+
+        function formatDate(value) {
+            if (!value) return "—";
+            return new Intl.DateTimeFormat(words[language].dateLocale, { day: "numeric", month: "short", year: "numeric" })
+                .format(new Date(`${value}T12:00:00`));
+        }
+
+        function getDuration() {
+            if (!pickupInput.value || !returnInput.value) return 0;
+            return Math.round((new Date(`${returnInput.value}T12:00:00`) - new Date(`${pickupInput.value}T12:00:00`)) / 86400000);
+        }
+
+        function formatPrice(amount) {
+            return new Intl.NumberFormat(language === "it" ? "it-IT" : "en-GB", {
+                style: "currency", currency: words[language].currency, maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function updateSummary() {
+            const duration = getDuration();
+            document.getElementById("summary-pickup").textContent =
+                `${formatDate(pickupInput.value)}${pickupInput.value ? ` · ${words[language].city[locationInput.value]}` : ""}`;
+            document.getElementById("summary-return").textContent = formatDate(returnInput.value);
+            document.getElementById("summary-duration").textContent = duration > 0
+                ? `${duration} ${duration === 1 ? words[language].day : words[language].days}`
+                : words[language].selectDate;
+            document.getElementById("summary-rate").textContent = `${formatPrice(vehicle.price)} ${words[language].perDay}`;
+            document.getElementById("summary-total").innerHTML = duration > 0
+                ? `${formatPrice(duration * vehicle.price)} <small>EUR</small>`
+                : "—";
+        }
+
+        function formatConfirmation(record) {
+            const text = words[language];
+            const duration = record.duration;
+            const dates = `${formatDate(record.pickup)} — ${formatDate(record.return)}`;
+            document.getElementById("confirmation-reference").textContent = `${text.refLabel}: ${record.reference}`;
+            document.getElementById("confirmation-summary").innerHTML = `
+                <div class="confirmation-item"><small>${text.confirmCar}</small><span>${vehicle.name[language]}</span></div>
+                <div class="confirmation-item"><small>${text.confirmLocation}</small><span>${text.city[record.location]}</span></div>
+                <div class="confirmation-item"><small>${text.confirmDates}</small><span>${dates} · ${duration} ${duration === 1 ? text.day : text.days}</span></div>
+                <div class="confirmation-item"><small>${text.confirmTotal}</small><span>${formatPrice(record.total)}</span></div>`;
+
+            const mailBody = [
+                text.mailIntro,
+                `${text.confirmCar}: ${vehicle.name[language]}`,
+                `${text.confirmLocation}: ${text.city[record.location]}`,
+                `${text.confirmDates}: ${dates}`,
+                `${text.confirmTotal}: ${formatPrice(record.total)}`,
+                `${text.mailName}: ${record.name}`,
+                `${text.mailEmail}: ${record.email}`,
+                `${text.mailPhone}: ${record.phone}`,
+                `${text.mailNotes}: ${record.notes || "—"}`,
+                `${text.refLabel}: ${record.reference}`
+            ].join("\n");
+            document.getElementById("email-booking").href =
+                `mailto:concierge@veloura.it?subject=${encodeURIComponent(`${text.mailSubject}: ${vehicle.name[language]}`)}&body=${encodeURIComponent(mailBody)}`;
+        }
+
+        function showSavedRequest(record) {
+            layout.hidden = true;
+            confirmation.hidden = false;
+            formatConfirmation(record);
+        }
+
+        function setLanguage(nextLanguage) {
+            language = nextLanguage;
+            localStorage.setItem("veloura-language", language);
+            document.documentElement.lang = language;
+            document.title = vehicle
+                ? `Veloura — ${words[language].title} · ${vehicle.name[language]}`
+                : `Veloura — ${words[language].missingTitle}`;
+            document.querySelectorAll("[data-i18n]").forEach((element) => {
+                element.textContent = words[language][element.dataset.i18n];
+            });
+            languageButtons.forEach((button) => {
+                button.setAttribute("aria-pressed", String(button.dataset.language === language));
+            });
+            if (vehicle) {
+                document.getElementById("car-name").textContent = vehicle.name[language];
+                document.getElementById("car-category").textContent = vehicle.category[language];
+                document.getElementById("car-image").alt = vehicle.name[language];
+                document.getElementById("back-link").href = `vehicle.html?car=${encodeURIComponent(carId)}`;
+                updateSummary();
+                const saved = localStorage.getItem(`veloura-reservation-${carId}`);
+                if (saved && !confirmation.hidden) formatConfirmation(JSON.parse(saved));
+            }
+        }
+
+        if (!vehicle) {
+            bookingPage.hidden = true;
+            invalidPage.hidden = false;
+            document.title = `Veloura — ${words[language].missingTitle}`;
+        } else {
+            document.title = `Veloura — ${words[language].title} · ${vehicle.name[language]}`;
+            document.getElementById("car-image").src = vehicle.image;
+            document.getElementById("car-name").textContent = vehicle.name[language];
+            document.getElementById("car-category").textContent = vehicle.category[language];
+            pickupInput.min = todayString;
+            returnInput.min = todayString;
+
+            pickupInput.addEventListener("change", () => {
+                returnInput.min = pickupInput.value || todayString;
+                if (returnInput.value && returnInput.value <= pickupInput.value) returnInput.value = "";
+                formError.textContent = "";
+                updateSummary();
+            });
+            returnInput.addEventListener("change", () => {
+                formError.textContent = "";
+                updateSummary();
+            });
+            locationInput.addEventListener("change", updateSummary);
+            form.addEventListener("input", () => { formError.textContent = ""; });
+
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+                if (!form.reportValidity()) return;
+                const duration = getDuration();
+                if (duration < 1) {
+                    formError.textContent = words[language].invalidDates;
+                    return;
+                }
+                const data = new FormData(form);
+                const name = data.get("name").trim();
+                const email = data.get("email").trim();
+                const phone = data.get("phone").trim();
+                if (!name || !email || !phone) {
+                    formError.textContent = words[language].emptyContact;
+                    return;
+                }
+                const record = {
+                    reference: `VL-${Date.now().toString(36).toUpperCase()}`,
+                    carId,
+                    pickup: data.get("pickup"),
+                    return: data.get("return"),
+                    location: data.get("location"),
+                    name,
+                    email,
+                    phone,
+                    notes: data.get("notes").trim(),
+                    duration,
+                    total: duration * vehicle.price,
+                    createdAt: new Date().toISOString()
+                };
+                localStorage.setItem(`veloura-reservation-${carId}`, JSON.stringify(record));
+                formError.textContent = "";
+                showSavedRequest(record);
+            });
+
+            document.getElementById("edit-booking").addEventListener("click", () => {
+                const record = JSON.parse(localStorage.getItem(`veloura-reservation-${carId}`));
+                if (!record) return;
+                pickupInput.value = record.pickup;
+                returnInput.min = record.pickup;
+                returnInput.value = record.return;
+                locationInput.value = record.location;
+                form.elements.name.value = record.name;
+                form.elements.email.value = record.email;
+                form.elements.phone.value = record.phone;
+                form.elements.notes.value = record.notes;
+                confirmation.hidden = true;
+                layout.hidden = false;
+                updateSummary();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+
+            document.getElementById("remove-booking").addEventListener("click", () => {
+                if (!window.confirm(words[language].removeConfirm)) return;
+                localStorage.removeItem(`veloura-reservation-${carId}`);
+                confirmation.hidden = true;
+                layout.hidden = false;
+                form.reset();
+                returnInput.min = todayString;
+                formError.textContent = "";
+                updateSummary();
+            });
+
+            const savedRequest = localStorage.getItem(`veloura-reservation-${carId}`);
+            if (savedRequest) {
+                const record = JSON.parse(savedRequest);
+                if (record.carId === carId) showSavedRequest(record);
+                else localStorage.removeItem(`veloura-reservation-${carId}`);
+            }
+            updateSummary();
+        }
+
+        languageButtons.forEach((button) => button.addEventListener("click", () => setLanguage(button.dataset.language)));
+        setLanguage(language);
+    </script>
+</body>
+</html>

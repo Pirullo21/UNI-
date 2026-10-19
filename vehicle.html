@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10110f">
+    <meta name="description" content="Scopri i dettagli, le immagini e la scheda tecnica della tua prossima auto di lusso.">
+    <title>Veloura — Dettagli auto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+            --ink: #10110f;
+            --panel: #171815;
+            --cream: #f2efe8;
+            --muted: #aaa99f;
+            --gold: #c9a96e;
+            --gold-light: #dfc590;
+            --line: rgba(242,239,232,.12);
+            --serif: "Playfair Display", Georgia, serif;
+            --sans: "DM Sans", Arial, sans-serif;
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; background: var(--ink); color: var(--cream); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+        a { color: inherit; text-decoration: none; }
+        button { font: inherit; }
+        .announcement { min-height: 36px; display: grid; place-items: center; padding: 7px 18px; background: var(--gold); color: #171611; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-align: center; text-transform: uppercase; }
+        .site-header { position: absolute; z-index: 5; top: 36px; left: 0; width: 100%; border-bottom: 1px solid rgba(255,255,255,.17); }
+        .nav-wrap { width: min(1280px, calc(100% - 80px)); height: 88px; margin: auto; display: flex; align-items: center; justify-content: space-between; }
+        .brand { display: inline-flex; align-items: center; gap: 12px; font-family: var(--serif); font-size: 23px; letter-spacing: .13em; }
+        .brand-mark { width: 29px; height: 29px; display: grid; place-items: center; border: 1px solid var(--gold); color: var(--gold-light); font-family: var(--serif); font-size: 17px; font-style: italic; }
+        .nav-right { display: flex; align-items: center; gap: 27px; }
+        .back-link, .language-button { color: rgba(255,255,255,.82); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+        .back-link:hover, .language-button:hover { color: var(--gold-light); }
+        .language-switch { display: flex; align-items: center; gap: 7px; }
+        .language-button { padding: 7px 2px; border: 0; background: transparent; color: rgba(255,255,255,.52); cursor: pointer; }
+        .language-button[aria-pressed="true"] { color: var(--gold-light); }
+        .language-divider { color: rgba(255,255,255,.3); font-size: 11px; }
+        .detail-hero { min-height: 680px; height: min(770px, 88vh); display: flex; align-items: end; padding: 0 max(40px, calc((100% - 1280px) / 2)) 76px; background-position: center; background-size: cover; }
+        .hero-copy { width: min(1280px, 100%); margin: 0 auto; }
+        .eyebrow { display: flex; align-items: center; gap: 13px; color: var(--gold-light); font-size: 10px; font-weight: 600; letter-spacing: .23em; text-transform: uppercase; }
+        .eyebrow::before { width: 31px; height: 1px; background: var(--gold); content: ""; }
+        h1, h2, h3, p { margin-top: 0; }
+        h1 { margin: 19px 0 8px; font-family: var(--serif); font-size: clamp(48px, 7vw, 82px); font-weight: 500; letter-spacing: -.04em; line-height: 1.04; }
+        .subtitle { margin-bottom: 22px; color: rgba(242,239,232,.78); font-size: 14px; }
+        .hero-bottom { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+        .price { color: var(--gold-light); font-family: var(--serif); font-size: 24px; }
+        .price small { color: var(--muted); font-family: var(--sans); font-size: 11px; }
+        .button-primary { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; padding: 0 23px; border: 1px solid var(--gold); background: var(--gold); color: #171611; font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; transition: background .2s, color .2s; }
+        .button-primary:hover { background: transparent; color: var(--gold-light); }
+        .content { width: min(1280px, calc(100% - 80px)); margin: auto; }
+        .gallery-section { padding: 74px 0 0; }
+        .section-heading { margin-bottom: 24px; }
+        .section-heading .eyebrow { margin-bottom: 15px; }
+        h2 { margin-bottom: 0; font-family: var(--serif); font-size: clamp(34px, 4vw, 48px); font-weight: 500; letter-spacing: -.03em; }
+        .gallery { display: grid; grid-template-columns: 1.45fr 1fr; grid-template-rows: repeat(2, minmax(160px, 220px)); gap: 13px; }
+        .gallery-image { display: block; width: 100%; height: 100%; min-height: 0; overflow: hidden; background: #20211d; }
+        .gallery-image:first-child { grid-row: 1 / 3; }
+        .gallery-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .45s ease; }
+        .gallery-image:hover img { transform: scale(1.035); }
+        .specs-section { padding: 82px 0 100px; }
+        .specs-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 75px; }
+        .specs-intro p { max-width: 400px; margin: 19px 0 0; color: var(--muted); font-size: 13px; line-height: 1.9; }
+        .spec-list { display: grid; grid-template-columns: 1fr 1fr; margin: 0; border-top: 1px solid var(--line); }
+        .spec-item { padding: 19px 15px 19px 0; border-bottom: 1px solid var(--line); }
+        .spec-item dt { margin-bottom: 8px; color: var(--muted); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; }
+        .spec-item dd { margin: 0; color: var(--cream); font-size: 14px; }
+        .detail-footer { border-top: 1px solid var(--line); }
+        .footer-content { width: min(1280px, calc(100% - 80px)); min-height: 92px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; color: var(--muted); font-size: 10px; }
+        .footer-content .brand { color: var(--cream); font-size: 17px; }
+        .not-found { min-height: 100vh; display: grid; place-items: center; padding: 30px; text-align: center; }
+        .not-found h1 { font-size: 48px; }
+        .not-found p { color: var(--muted); }
+        @media (max-width: 700px) {
+            .nav-wrap, .content, .footer-content { width: calc(100% - 40px); }
+            .nav-wrap { height: 70px; }
+            .site-header { top: 33px; }
+            .announcement { min-height: 33px; font-size: 8px; }
+            .brand { gap: 9px; font-size: 18px; }
+            .brand-mark { width: 25px; height: 25px; font-size: 15px; }
+            .nav-right { gap: 12px; }
+            .back-link, .language-button { font-size: 8px; letter-spacing: .08em; }
+            .language-switch { gap: 5px; }
+            .detail-hero { min-height: 620px; height: 82vh; padding: 0 20px 40px; background-position: 57% center; }
+            .hero-copy { width: 100%; }
+            h1 { font-size: clamp(43px, 11vw, 65px); }
+            .subtitle { max-width: 300px; font-size: 12px; line-height: 1.7; }
+            .hero-bottom { align-items: flex-start; flex-direction: column; gap: 18px; }
+            .gallery-section { padding-top: 58px; }
+            .gallery { grid-template-columns: 1fr 1fr; grid-template-rows: 250px 135px; gap: 8px; }
+            .gallery-image:first-child { grid-column: 1 / 3; grid-row: auto; }
+            .specs-section { padding: 62px 0 70px; }
+            .specs-layout { grid-template-columns: 1fr; gap: 28px; }
+            .spec-item { padding-right: 8px; }
+            .footer-content { min-height: 110px; flex-wrap: wrap; padding: 20px 0; }
+        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+    </style>
+</head>
+<body>
+    <div class="announcement" data-i18n="announcement">Un’esperienza su misura. Ovunque ti porti la strada.</div>
+    <header class="site-header">
+        <div class="nav-wrap">
+            <a class="brand" href="index.html" aria-label="Veloura home"><span class="brand-mark">V</span>VELOURA</a>
+            <div class="nav-right">
+                <a class="back-link" href="index.html#fleet" data-i18n="backFleet">← Tutte le auto</a>
+                <div class="language-switch" aria-label="Seleziona la lingua">
+                    <button class="language-button" type="button" data-language="it" aria-pressed="true">IT</button>
+                    <span class="language-divider">/</span>
+                    <button class="language-button" type="button" data-language="en" aria-pressed="false">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main id="vehicle-detail"></main>
+    <footer class="detail-footer">
+        <div class="footer-content">
+            <a class="brand" href="index.html"><span class="brand-mark">V</span>VELOURA</a>
+            <span data-i18n="footerCopy">© 2026 Veloura. L’eccellenza, in movimento.</span>
+            <a href="mailto:concierge@veloura.it">concierge@veloura.it</a>
+        </div>
+    </footer>
+    <script>
+        const cars = {
+            "porsche-911": {
+                name: { it: "Porsche 911 Carrera", en: "Porsche 911 Carrera" },
+                category: { it: "Sportiva", en: "Sports car" },
+                price: 490,
+                tagline: { it: "L’emozione pura, scolpita in ogni curva.", en: "Pure exhilaration, shaped into every curve." },
+                description: {
+                    it: "La 911 Carrera unisce prestazioni autentiche e comfort raffinato. Un’icona pensata per trasformare ogni strada in un’esperienza da ricordare.",
+                    en: "The 911 Carrera brings together thrilling performance and refined comfort. An icon designed to make every road an experience to remember."
+                },
+                specs: [
+                    ["engine", "3.0 L boxer biturbo", "3.0 L twin-turbo flat-six"],
+                    ["power", "385 CV", "385 hp"],
+                    ["acceleration", "4,2 s · 0–100 km/h", "4.2 s · 0–62 mph"],
+                    ["topSpeed", "293 km/h", "182 mph"],
+                    ["transmission", "Automatica PDK", "PDK automatic"],
+                    ["seats", "2+2 posti", "2+2 seats"],
+                    ["luggage", "132 L", "132 L"],
+                    ["drive", "Trazione posteriore", "Rear-wheel drive"]
+                ],
+                images: [
+                    ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1500&q=88", "Porsche 911 Carrera, vista principale", "Porsche 911 Carrera, main view"],
+                    ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=900&q=82&sat=-15", "Dettaglio della Porsche 911 Carrera", "Porsche 911 Carrera detail"],
+                    ["https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=82", "Porsche 911 Carrera su strada", "Porsche 911 Carrera on the road"]
+                ],
+                hero: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2200&q=88"
+            },
+            "range-rover-sport": {
+                name: { it: "Range Rover Sport", en: "Range Rover Sport" },
+                category: { it: "SUV di lusso", en: "Luxury SUV" },
+                price: 390,
+                tagline: { it: "Presenza inconfondibile. Libertà senza confini.", en: "Unmistakable presence. Freedom without limits." },
+                description: {
+                    it: "Comfort di prima classe e carattere deciso si incontrano in un SUV pronto a tutto. Ideale per attraversare la città o partire verso nuovi orizzonti.",
+                    en: "First-class comfort meets confident character in an SUV ready for anything. Equally at home in the city or on the road to new horizons."
+                },
+                specs: [
+                    ["engine", "3.0 L mild hybrid", "3.0 L mild hybrid"],
+                    ["power", "350 CV", "350 hp"],
+                    ["acceleration", "5,9 s · 0–100 km/h", "5.9 s · 0–62 mph"],
+                    ["topSpeed", "225 km/h", "140 mph"],
+                    ["transmission", "Automatica a 8 rapporti", "8-speed automatic"],
+                    ["seats", "5 posti", "5 seats"],
+                    ["luggage", "647 L", "647 L"],
+                    ["drive", "Trazione integrale", "All-wheel drive"]
+                ],
+                images: [
+                    ["https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1500&q=88", "Range Rover Sport, vista principale", "Range Rover Sport, main view"],
+                    ["https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=900&q=82&sat=-15", "Dettaglio del SUV Range Rover Sport", "Range Rover Sport detail"],
+                    ["https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=900&q=82", "Range Rover Sport in viaggio", "Range Rover Sport on the road"]
+                ],
+                hero: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=2200&q=88"
+            },
+            "mercedes-s-class": {
+                name: { it: "Mercedes-Benz Classe S", en: "Mercedes-Benz S-Class" },
+                category: { it: "Eleganza", en: "Luxury saloon" },
+                price: 520,
+                tagline: { it: "Il lusso discreto, elevato a destinazione.", en: "Quiet luxury, elevated to a destination." },
+                description: {
+                    it: "La Classe S ridefinisce il viaggio in prima classe: interni curati, silenzio assoluto e tecnologia intuitiva per arrivare sempre nel modo giusto.",
+                    en: "The S-Class redefines first-class travel: considered interiors, exceptional quiet and intuitive technology, so every arrival feels just right."
+                },
+                specs: [
+                    ["engine", "3.0 L sei cilindri mild hybrid", "3.0 L mild-hybrid inline-six"],
+                    ["power", "367 CV", "367 hp"],
+                    ["acceleration", "5,4 s · 0–100 km/h", "5.4 s · 0–62 mph"],
+                    ["topSpeed", "250 km/h", "155 mph"],
+                    ["transmission", "Automatica a 9 rapporti", "9-speed automatic"],
+                    ["seats", "5 posti", "5 seats"],
+                    ["luggage", "550 L", "550 L"],
+                    ["drive", "Trazione posteriore", "Rear-wheel drive"]
+                ],
+                images: [
+                    ["https://images.unsplash.com/photo-1502957291543-d85480254bf8?auto=format&fit=crop&w=1500&q=88", "Mercedes-Benz Classe S, vista principale", "Mercedes-Benz S-Class, main view"],
+                    ["https://images.unsplash.com/photo-1502957291543-d85480254bf8?auto=format&fit=crop&w=900&q=82&sat=-20", "Dettaglio della berlina Mercedes-Benz", "Mercedes-Benz saloon detail"],
+                    ["https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=900&q=82", "Mercedes-Benz Classe S in viaggio", "Mercedes-Benz S-Class on the road"]
+                ],
+                hero: "https://images.unsplash.com/photo-1502957291543-d85480254bf8?auto=format&fit=crop&w=2200&q=88"
+            }
+        };
+
+        const copy = {
+            it: {
+                announcement: "Un’esperienza su misura. Ovunque ti porti la strada.",
+                backFleet: "← Tutte le auto", details: "L’auto, da vicino", specs: "Scheda tecnica",
+                about: "Ogni dettaglio, scelto per te.", booking: "Richiedi disponibilità",
+                perDay: "/ giorno", engine: "Motore", power: "Potenza", acceleration: "Accelerazione",
+                topSpeed: "Velocità massima", transmission: "Cambio", seats: "Posti",
+                luggage: "Bagagliaio", drive: "Trazione", footerCopy: "© 2026 Veloura. L’eccellenza, in movimento.",
+                missing: "Auto non trovata", missingCopy: "Il veicolo richiesto non è disponibile nella nostra flotta.",
+                backHome: "Torna alla flotta", imageLabels: ["Vista principale", "Dettaglio", "In viaggio"]
+            },
+            en: {
+                announcement: "A tailor-made experience. Wherever the road takes you.",
+                backFleet: "← View all cars", details: "A closer look", specs: "Technical specifications",
+                about: "Every detail, chosen for you.", booking: "Enquire about availability",
+                perDay: "/ day", engine: "Engine", power: "Power", acceleration: "Acceleration",
+                topSpeed: "Top speed", transmission: "Transmission", seats: "Seats",
+                luggage: "Luggage capacity", drive: "Drivetrain", footerCopy: "© 2026 Veloura. Excellence in motion.",
+                missing: "Vehicle not found", missingCopy: "The requested vehicle is not available in our collection.",
+                backHome: "Return to the collection", imageLabels: ["Main view", "Details", "On the road"]
+            }
+        };
+
+        const selectedCar = cars[new URLSearchParams(window.location.search).get("car")];
+        let language = localStorage.getItem("veloura-language") === "en" ? "en" : "it";
+        const detail = document.getElementById("vehicle-detail");
+        const languageButtons = document.querySelectorAll("[data-language]");
+
+        function renderVehicle() {
+            if (!selectedCar) {
+                document.title = `Veloura — ${copy[language].missing}`;
+                detail.innerHTML = `<section class="not-found"><div><div class="eyebrow">VELOURA</div><h1>${copy[language].missing}</h1><p>${copy[language].missingCopy}</p><a class="button-primary" href="index.html#fleet">${copy[language].backHome}</a></div></section>`;
+                return;
+            }
+
+            const text = copy[language];
+            const carName = selectedCar.name[language];
+            const galleryImages = selectedCar.images.map(([src, altIt, altEn], index) => {
+                const alt = language === "it" ? altIt : altEn;
+                return `<a class="gallery-image" href="${src}" target="_blank" rel="noopener" aria-label="${text.imageLabels[index]} — ${carName}"><img src="${src}" alt="${alt}" ${index ? 'loading="lazy"' : ""}></a>`;
+            }
+            ).join("");
+            const specs = selectedCar.specs.map(([key, italian, english]) =>
+                `<div class="spec-item"><dt>${text[key]}</dt><dd>${language === "it" ? italian : english}</dd></div>`
+            ).join("");
+            document.title = `Veloura — ${carName}`;
+            detail.innerHTML = `
+                <section class="detail-hero" style="background-image: linear-gradient(90deg, rgba(10,11,10,.78), rgba(10,11,10,.12)), linear-gradient(0deg, rgba(10,11,10,.88), transparent 60%), url('${selectedCar.hero}')">
+                    <div class="hero-copy">
+                        <div class="eyebrow">${selectedCar.category[language]}</div>
+                        <h1>${carName}</h1>
+                        <p class="subtitle">${selectedCar.tagline[language]}</p>
+                        <div class="hero-bottom">
+                            <div class="price">€ ${selectedCar.price} <small>${text.perDay}</small></div>
+                            <a class="button-primary" href="reservation.html?car=${encodeURIComponent(new URLSearchParams(window.location.search).get("car"))}">${text.booking}</a>
+                        </div>
+                    </div>
+                </section>
+                <section class="content gallery-section">
+                    <div class="section-heading"><div class="eyebrow">${text.details}</div><h2>${carName}</h2></div>
+                    <div class="gallery">${galleryImages}</div>
+                </section>
+                <section class="content specs-section">
+                    <div class="specs-layout">
+                        <div class="specs-intro"><div class="eyebrow">${text.about}</div><p>${selectedCar.description[language]}</p></div>
+                        <div><div class="section-heading"><h2>${text.specs}</h2></div><dl class="spec-list">${specs}</dl></div>
+                    </div>
+                </section>`;
+        }
+
+        function setLanguage(nextLanguage) {
+            language = nextLanguage;
+            localStorage.setItem("veloura-language", language);
+            document.documentElement.lang = language;
+            document.querySelectorAll("[data-i18n]").forEach((element) => {
+                element.textContent = copy[language][element.dataset.i18n];
+            });
+            languageButtons.forEach((button) => {
+                button.setAttribute("aria-pressed", String(button.dataset.language === language));
+            });
+            renderVehicle();
+        }
+
+        languageButtons.forEach((button) => button.addEventListener("click", () => setLanguage(button.dataset.language)));
+        setLanguage(language);
+    </script>
+</body>
+</html>

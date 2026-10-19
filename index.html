@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10110f">
+    <meta name="description" content="Auto d'eccezione, esperienze senza compromessi. Scopri il noleggio auto di lusso firmato Veloura.">
+    <title>Veloura — Luxury Car Rental</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+            --ink: #10110f;
+            --panel: #171815;
+            --panel-light: #20211d;
+            --cream: #f2efe8;
+            --muted: #aaa99f;
+            --gold: #c9a96e;
+            --gold-light: #dfc590;
+            --line: rgba(242, 239, 232, .12);
+            --serif: "Playfair Display", Georgia, serif;
+            --sans: "DM Sans", Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            background: var(--ink);
+            color: var(--cream);
+            font-family: var(--sans);
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: inherit; text-decoration: none; }
+        button, input, select { font: inherit; }
+        button, a { -webkit-tap-highlight-color: transparent; }
+        .announcement {
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 18px;
+            background: var(--gold);
+            color: #171611;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .16em;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .site-header {
+            position: absolute;
+            z-index: 5;
+            top: 36px;
+            left: 0;
+            width: 100%;
+            border-bottom: 1px solid rgba(255,255,255,.17);
+        }
+        .nav-wrap {
+            width: min(1280px, calc(100% - 80px));
+            height: 88px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--serif);
+            font-size: 23px;
+            letter-spacing: .13em;
+        }
+        .brand-mark {
+            width: 29px;
+            height: 29px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--gold);
+            color: var(--gold-light);
+            font-family: var(--serif);
+            font-size: 17px;
+            font-style: italic;
+        }
+        .main-nav { display: flex; align-items: center; gap: 38px; }
+        .main-nav a, .language-button {
+            color: rgba(255,255,255,.82);
+            font-size: 11px;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            transition: color .2s ease;
+        }
+        .main-nav a:hover, .language-button:hover { color: var(--gold-light); }
+        .nav-actions { display: flex; align-items: center; gap: 25px; }
+        .language-switch { display: flex; align-items: center; gap: 7px; }
+        .language-button {
+            padding: 7px 2px;
+            border: 0;
+            background: transparent;
+            cursor: pointer;
+            color: rgba(255,255,255,.52);
+        }
+        .language-button[aria-pressed="true"] { color: var(--gold-light); }
+        .language-divider { color: rgba(255,255,255,.3); font-size: 11px; }
+        .nav-cta, .button-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 46px;
+            padding: 0 22px;
+            border: 1px solid var(--gold);
+            background: var(--gold);
+            color: #171611;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            transition: background .2s ease, color .2s ease;
+        }
+        .nav-cta { min-height: 40px; padding: 0 18px; }
+        .nav-cta:hover, .button-primary:hover { background: transparent; color: var(--gold-light); }
+        .menu-toggle { display: none; }
+
+        .hero {
+            position: relative;
+            min-height: 720px;
+            height: min(810px, 92vh);
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            background:
+                linear-gradient(90deg, rgba(10,11,10,.88) 0%, rgba(10,11,10,.57) 42%, rgba(10,11,10,.08) 100%),
+                linear-gradient(0deg, rgba(10,11,10,.78) 0%, transparent 37%),
+                url("https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2200&q=88") center 56% / cover;
+        }
+        .hero-content {
+            width: min(1280px, calc(100% - 80px));
+            margin: 45px auto 0;
+        }
+        .eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            color: var(--gold-light);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .23em;
+            text-transform: uppercase;
+        }
+        .eyebrow::before { width: 31px; height: 1px; background: var(--gold); content: ""; }
+        h1, h2, h3, p { margin-top: 0; }
+        h1 {
+            max-width: 670px;
+            margin: 25px 0 20px;
+            font-family: var(--serif);
+            font-size: clamp(54px, 7.1vw, 91px);
+            font-weight: 500;
+            letter-spacing: -.045em;
+            line-height: .99;
+        }
+        h1 span { color: var(--gold-light); font-style: italic; }
+        .hero-copy {
+            max-width: 430px;
+            margin-bottom: 33px;
+            color: rgba(242,239,232,.72);
+            font-size: 14px;
+            line-height: 1.9;
+        }
+        .hero-buttons { display: flex; align-items: center; gap: 27px; }
+        .text-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            color: var(--cream);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+        .text-link span { color: var(--gold); font-size: 17px; transition: transform .2s; }
+        .text-link:hover span { transform: translateX(4px); }
+        .hero-note {
+            position: absolute;
+            right: max(40px, calc((100% - 1280px) / 2));
+            bottom: 72px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            color: rgba(255,255,255,.72);
+            font-size: 10px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+        .hero-note::before { width: 36px; height: 1px; background: var(--gold); content: ""; }
+        .booking-section {
+            position: relative;
+            z-index: 2;
+            width: min(1280px, calc(100% - 80px));
+            margin: -1px auto 0;
+        }
+        .booking-form {
+            display: grid;
+            grid-template-columns: 1.1fr 1.1fr 1fr 1fr auto;
+            align-items: stretch;
+            padding: 24px 25px;
+            background: var(--panel);
+            border: 1px solid rgba(201,169,110,.24);
+            box-shadow: 0 18px 50px rgba(0,0,0,.23);
+        }
+        .booking-field { min-width: 0; padding: 0 23px; border-right: 1px solid var(--line); }
+        .booking-field:first-child { padding-left: 5px; }
+        .booking-field label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--muted);
+            font-size: 9px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+        .booking-field select, .booking-field input {
+            width: 100%;
+            min-width: 0;
+            padding: 0;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: var(--cream);
+            font-size: 12px;
+        }
+        .booking-field select { cursor: pointer; }
+        .booking-field option { background: var(--panel); color: var(--cream); }
+        .booking-submit { margin-left: 22px; border: 0; cursor: pointer; }
+        .booking-message { min-height: 21px; padding: 10px 4px 0; color: var(--gold-light); font-size: 12px; }
+
+        .section { width: min(1280px, calc(100% - 80px)); margin: auto; }
+        .intro-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 70px;
+            align-items: end;
+            padding: 116px 0 59px;
+        }
+        .section-heading { max-width: 575px; }
+        .section-heading .eyebrow { margin-bottom: 20px; }
+        h2 {
+            margin-bottom: 0;
+            font-family: var(--serif);
+            font-size: clamp(38px, 4.3vw, 56px);
+            font-weight: 500;
+            letter-spacing: -.035em;
+            line-height: 1.12;
+        }
+        .intro-copy { max-width: 440px; margin: 0 0 6px auto; color: var(--muted); font-size: 13px; line-height: 1.9; }
+        .fleet-section { padding: 3px 0 110px; }
+        .fleet-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 31px; }
+        .fleet-heading h2 { font-size: 40px; }
+        .fleet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 19px; }
+        .car-card { overflow: hidden; background: var(--panel); border: 1px solid rgba(255,255,255,.07); }
+        .car-image { position: relative; height: 225px; overflow: hidden; background: #20211d; }
+        .car-photo-link { display: block; width: 100%; height: 100%; }
+        .car-photo-link:focus-visible { outline: 2px solid var(--gold-light); outline-offset: -3px; }
+        .car-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+        .car-card:hover .car-image img { transform: scale(1.04); }
+        .car-category {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            padding: 8px 10px;
+            background: rgba(16,17,15,.82);
+            color: var(--gold-light);
+            font-size: 9px;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+        }
+        .car-info { padding: 22px 22px 20px; }
+        .car-title-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+        .car-info h3 { margin-bottom: 8px; font-family: var(--serif); font-size: 23px; font-weight: 500; }
+        .car-price { color: var(--gold-light); font-size: 11px; white-space: nowrap; }
+        .car-meta { display: flex; gap: 17px; color: var(--muted); font-size: 10px; }
+        .card-rule { margin: 18px 0 15px; border: 0; border-top: 1px solid var(--line); }
+        .car-link { color: var(--cream); font-size: 9px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+        .car-link span { padding-left: 5px; color: var(--gold); }
+        .service-band { background: #191a17; border-top: 1px solid rgba(255,255,255,.06); }
+        .service-content {
+            width: min(1280px, calc(100% - 80px));
+            min-height: 145px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+        .service-content h2 { max-width: 590px; font-size: clamp(26px, 3vw, 37px); }
+        .service-content h2 span { color: var(--gold-light); font-style: italic; }
+        footer { border-top: 1px solid var(--line); }
+        .footer-content {
+            width: min(1280px, calc(100% - 80px));
+            min-height: 92px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+        .footer-content .brand { color: var(--cream); font-size: 17px; }
+
+        @media (max-width: 900px) {
+            .nav-wrap, .hero-content, .booking-section, .section, .service-content, .footer-content { width: min(100% - 48px, 720px); }
+            .nav-wrap { height: 76px; }
+            .main-nav { gap: 19px; }
+            .main-nav a { font-size: 9px; }
+            .nav-actions { gap: 13px; }
+            .nav-cta { padding: 0 12px; font-size: 9px; }
+            .booking-form { grid-template-columns: repeat(2, 1fr); gap: 23px 0; }
+            .booking-field:nth-child(2) { border-right: 0; }
+            .booking-field:nth-child(3) { padding-left: 5px; }
+            .booking-submit { margin-left: 15px; }
+            .intro-section { gap: 38px; padding-top: 88px; }
+            .fleet-grid { gap: 13px; }
+            .car-image { height: 175px; }
+            .car-info { padding: 18px 15px; }
+            .car-meta { gap: 9px; font-size: 9px; }
+        }
+        @media (max-width: 650px) {
+            .announcement { min-height: 33px; font-size: 8px; }
+            .site-header { top: 33px; }
+            .nav-wrap, .hero-content, .booking-section, .section, .service-content, .footer-content { width: calc(100% - 40px); }
+            .nav-wrap { height: 70px; }
+            .brand { font-size: 19px; }
+            .brand-mark { width: 25px; height: 25px; font-size: 15px; }
+            .menu-toggle {
+                display: inline-flex;
+                width: 38px;
+                height: 38px;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid var(--line);
+                background: rgba(16,17,15,.6);
+                color: var(--cream);
+                font-size: 19px;
+                cursor: pointer;
+            }
+            .nav-actions { margin-left: auto; margin-right: 12px; }
+            .nav-cta { display: none; }
+            .main-nav {
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                display: none;
+                padding: 20px;
+                background: #171815;
+                border-bottom: 1px solid var(--line);
+            }
+            .main-nav.is-open { display: grid; gap: 21px; }
+            .main-nav a { font-size: 10px; }
+            .hero { min-height: 680px; height: 85vh; max-height: 790px; background-position: 61% center; }
+            .hero-content { margin-top: 75px; }
+            .eyebrow { font-size: 9px; }
+            h1 { max-width: 440px; margin-top: 22px; font-size: clamp(53px, 13vw, 74px); }
+            .hero-copy { max-width: 355px; font-size: 12px; }
+            .hero-buttons { gap: 18px; }
+            .button-primary { min-height: 44px; padding: 0 14px; font-size: 9px; }
+            .text-link { gap: 5px; font-size: 9px; }
+            .hero-note { right: 20px; bottom: 38px; font-size: 8px; }
+            .booking-form { padding: 21px 16px; }
+            .booking-field { padding: 0 12px; }
+            .booking-field:nth-child(3) { padding-left: 0; }
+            .booking-field label { font-size: 8px; }
+            .booking-field select, .booking-field input { font-size: 10px; }
+            .booking-submit { grid-column: 1 / -1; margin: 0; }
+            .intro-section { grid-template-columns: 1fr; gap: 22px; padding: 77px 0 42px; }
+            .intro-copy { margin: 0; font-size: 12px; }
+            .fleet-heading { align-items: start; gap: 15px; }
+            .fleet-heading h2 { font-size: 34px; }
+            .fleet-heading .text-link { margin-top: 13px; white-space: nowrap; }
+            .fleet-grid { grid-template-columns: 1fr; gap: 15px; }
+            .car-image { height: 220px; }
+            .car-info { padding: 20px; }
+            .car-meta { gap: 15px; font-size: 10px; }
+            .fleet-section { padding-bottom: 75px; }
+            .service-content { min-height: 180px; align-items: flex-start; flex-direction: column; justify-content: center; gap: 19px; }
+            .footer-content { min-height: 110px; flex-wrap: wrap; justify-content: space-between; padding: 20px 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="announcement" data-i18n="announcement">Un’esperienza su misura. Ovunque ti porti la strada.</div>
+    <header class="site-header">
+        <div class="nav-wrap">
+            <a class="brand" href="#" aria-label="Veloura home"><span class="brand-mark">V</span>VELOURA</a>
+            <nav class="main-nav" id="main-nav" aria-label="Navigazione principale">
+                <a href="#fleet" data-i18n="navFleet">La flotta</a>
+                <a href="#experience" data-i18n="navExperience">L’esperienza</a>
+                <a href="#contact" data-i18n="navContact">Contatti</a>
+            </nav>
+            <div class="nav-actions">
+                <div class="language-switch" aria-label="Seleziona la lingua">
+                    <button class="language-button" type="button" data-language="it" aria-pressed="true">IT</button>
+                    <span class="language-divider">/</span>
+                    <button class="language-button" type="button" data-language="en" aria-pressed="false">EN</button>
+                </div>
+                <a class="nav-cta" href="#booking" data-i18n="navCta">Prenota ora</a>
+            </div>
+            <button class="menu-toggle" type="button" aria-label="Apri menu" aria-expanded="false" aria-controls="main-nav">☰</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-content">
+                <div class="eyebrow" data-i18n="heroEyebrow">L’arte di viaggiare</div>
+                <h1 id="hero-title" data-i18n-html="heroTitle">La strada<br>è <span>tua.</span></h1>
+                <p class="hero-copy" data-i18n="heroCopy">Una collezione esclusiva di automobili, un servizio creato intorno a te. Il tuo prossimo viaggio inizia con una scelta straordinaria.</p>
+                <div class="hero-buttons">
+                    <a class="button-primary" href="#fleet" data-i18n="heroCta">Scopri la flotta</a>
+                    <a class="text-link" href="#experience"><span>↗</span><span data-i18n="heroLink">La nostra filosofia</span></a>
+                </div>
+            </div>
+            <div class="hero-note" data-i18n="heroNote">Milano · Italia · Ovunque</div>
+        </section>
+
+        <section class="booking-section" id="booking" aria-label="Prenota la tua auto">
+            <form class="booking-form" id="booking-form">
+                <div class="booking-field">
+                    <label for="location" data-i18n="pickupLabel">Luogo di ritiro</label>
+                    <select id="location" name="location">
+                        <option value="Milano" data-i18n="cityMilan">Milano</option>
+                        <option value="Roma" data-i18n="cityRome">Roma</option>
+                        <option value="Firenze" data-i18n="cityFlorence">Firenze</option>
+                        <option value="Venezia" data-i18n="cityVenice">Venezia</option>
+                    </select>
+                </div>
+                <div class="booking-field">
+                    <label for="car-class" data-i18n="classLabel">Categoria</label>
+                    <select id="car-class" name="class">
+                        <option value="Tutte" data-i18n="classAll">Tutte le auto</option>
+                        <option value="Sportiva" data-i18n="classSport">Sportiva</option>
+                        <option value="SUV" data-i18n="classSuv">SUV di lusso</option>
+                        <option value="Elegante" data-i18n="classElegance">Elegante</option>
+                    </select>
+                </div>
+                <div class="booking-field">
+                    <label for="pickup-date" data-i18n="dateLabel">Data di ritiro</label>
+                    <input id="pickup-date" name="pickup" type="date" required>
+                </div>
+                <div class="booking-field">
+                    <label for="return-date" data-i18n="returnLabel">Data di riconsegna</label>
+                    <input id="return-date" name="return" type="date" required>
+                </div>
+                <button class="button-primary booking-submit" type="submit" data-i18n="searchCta">Cerca un’auto</button>
+            </form>
+            <div class="booking-message" id="booking-message" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="section intro-section" id="experience">
+            <div class="section-heading">
+                <div class="eyebrow" data-i18n="introEyebrow">Oltre il viaggio</div>
+                <h2 data-i18n-html="introTitle">Non è solo l’auto.<br>È come ti fa sentire.</h2>
+            </div>
+            <p class="intro-copy" data-i18n="introCopy">Dalla prima chiave consegnata a mano all’ultimo chilometro: ogni dettaglio è pensato per lasciarti libero di goderti il viaggio. Auto impeccabili, assistenza dedicata, nessuna attesa.</p>
+        </section>
+
+        <section class="section fleet-section" id="fleet">
+            <div class="fleet-heading">
+                <div>
+                    <div class="eyebrow" data-i18n="fleetEyebrow">Una scelta straordinaria</div>
+                    <h2 data-i18n="fleetTitle">La nostra flotta</h2>
+                </div>
+                <a class="text-link" href="#booking"><span data-i18n="fleetLink">Vedi tutte le auto</span><span>↗</span></a>
+            </div>
+            <div class="fleet-grid">
+                <article class="car-card">
+                    <div class="car-image">
+                        <a class="car-photo-link" href="vehicle.html?car=porsche-911" aria-label="Scopri Porsche 911 Carrera">
+                            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=900&q=82" alt="Auto sportiva Porsche in una strada alpina" loading="lazy">
+                        </a>
+                        <span class="car-category" data-i18n="categorySport">Sportiva</span>
+                    </div>
+                    <div class="car-info">
+                        <div class="car-title-row"><h3>Porsche 911 Carrera</h3><span class="car-price">€ 490 <span data-i18n="perDay">/ giorno</span></span></div>
+                        <div class="car-meta"><span>3.0L · 385 CV</span><span data-i18n="metaAuto">Automatica</span><span>2+2 <span data-i18n="seats">posti</span></span></div>
+                        <hr class="card-rule">
+                        <a class="car-link" href="vehicle.html?car=porsche-911"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
+                    </div>
+                </article>
+                <article class="car-card">
+                    <div class="car-image">
+                        <a class="car-photo-link" href="vehicle.html?car=range-rover-sport" aria-label="Scopri Range Rover Sport">
+                            <img src="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=900&q=82" alt="SUV di lusso pronto per un viaggio" loading="lazy">
+                        </a>
+                        <span class="car-category" data-i18n="categorySuv">SUV di lusso</span>
+                    </div>
+                    <div class="car-info">
+                        <div class="car-title-row"><h3>Range Rover Sport</h3><span class="car-price">€ 390 <span data-i18n="perDay">/ giorno</span></span></div>
+                        <div class="car-meta"><span>3.0L · 350 CV</span><span data-i18n="metaAuto">Automatica</span><span>5 <span data-i18n="seats">posti</span></span></div>
+                        <hr class="card-rule">
+                        <a class="car-link" href="vehicle.html?car=range-rover-sport"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
+                    </div>
+                </article>
+                <article class="car-card">
+                    <div class="car-image">
+                        <a class="car-photo-link" href="vehicle.html?car=mercedes-s-class" aria-label="Scopri Mercedes-Benz Classe S">
+                            <img src="https://images.unsplash.com/photo-1502957291543-d85480254bf8?auto=format&fit=crop&w=900&q=82" alt="Elegante auto di lusso nera" loading="lazy">
+                        </a>
+                        <span class="car-category" data-i18n="categoryElegance">Eleganza</span>
+                    </div>
+                    <div class="car-info">
+                        <div class="car-title-row"><h3>Mercedes-Benz Classe S</h3><span class="car-price">€ 520 <span data-i18n="perDay">/ giorno</span></span></div>
+                        <div class="car-meta"><span>3.0L · 367 CV</span><span data-i18n="metaAuto">Automatica</span><span>5 <span data-i18n="seats">posti</span></span></div>
+                        <hr class="card-rule">
+                        <a class="car-link" href="vehicle.html?car=mercedes-s-class"><span data-i18n="discoverCar">Scopri l’auto</span><span>↗</span></a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="service-band">
+            <div class="service-content">
+                <h2 data-i18n-html="serviceTitle">Il tuo tempo è prezioso.<br><span>Noi lo sappiamo.</span></h2>
+                <a class="button-primary" href="mailto:concierge@veloura.it" data-i18n="serviceCta">Parla con il concierge</a>
+            </div>
+        </section>
+    </main>
+    <footer id="contact">
+        <div class="footer-content">
+            <a class="brand" href="#"><span class="brand-mark">V</span>VELOURA</a>
+            <span data-i18n="footerCopy">© 2025 Veloura. L’eccellenza, in movimento.</span>
+            <a href="mailto:concierge@veloura.it">concierge@veloura.it</a>
+        </div>
+    </footer>
+    <script>
+        const translations = {
+            it: {
+                announcement: "Un’esperienza su misura. Ovunque ti porti la strada.",
+                navFleet: "La flotta", navExperience: "L’esperienza", navContact: "Contatti", navCta: "Prenota ora",
+                heroEyebrow: "L’arte di viaggiare", heroTitle: "La strada<br>è <span>tua.</span>",
+                heroCopy: "Una collezione esclusiva di automobili, un servizio creato intorno a te. Il tuo prossimo viaggio inizia con una scelta straordinaria.",
+                heroCta: "Scopri la flotta", heroLink: "La nostra filosofia", heroNote: "Milano · Italia · Ovunque",
+                pickupLabel: "Luogo di ritiro", classLabel: "Categoria", dateLabel: "Data di ritiro", returnLabel: "Data di riconsegna",
+                cityMilan: "Milano", cityRome: "Roma", cityFlorence: "Firenze", cityVenice: "Venezia",
+                classAll: "Tutte le auto", classSport: "Sportiva", classSuv: "SUV di lusso", classElegance: "Elegante",
+                searchCta: "Cerca un’auto", introEyebrow: "Oltre il viaggio", introTitle: "Non è solo l’auto.<br>È come ti fa sentire.",
+                introCopy: "Dalla prima chiave consegnata a mano all’ultimo chilometro: ogni dettaglio è pensato per lasciarti libero di goderti il viaggio. Auto impeccabili, assistenza dedicata, nessuna attesa.",
+                fleetEyebrow: "Una scelta straordinaria", fleetTitle: "La nostra flotta", fleetLink: "Vedi tutte le auto",
+                categorySport: "Sportiva", categorySuv: "SUV di lusso", categoryElegance: "Eleganza", perDay: "/ giorno",
+                metaAuto: "Automatica", seats: "posti", discoverCar: "Scopri l’auto",
+                serviceTitle: "Il tuo tempo è prezioso.<br><span>Noi lo sappiamo.</span>",
+                serviceCta: "Parla con il concierge", footerCopy: "© 2026 Veloura. L’eccellenza, in movimento.",
+                bookingSuccess: "Richiesta pronta per {location}: ti ricontatteremo per confermare la disponibilità.",
+                bookingInvalid: "La data di riconsegna deve essere successiva alla data di ritiro.",
+                menuOpen: "Apri menu", menuClose: "Chiudi menu"
+            },
+            en: {
+                announcement: "A tailor-made experience. Wherever the road takes you.",
+                navFleet: "The collection", navExperience: "The experience", navContact: "Contact", navCta: "Book now",
+                heroEyebrow: "The art of travelling", heroTitle: "The road<br>is <span>yours.</span>",
+                heroCopy: "An exclusive collection of automobiles, with a service shaped around you. Your next journey starts with an extraordinary choice.",
+                heroCta: "Explore the collection", heroLink: "Our philosophy", heroNote: "Milan · Italy · Everywhere",
+                pickupLabel: "Pick-up location", classLabel: "Category", dateLabel: "Pick-up date", returnLabel: "Return date",
+                cityMilan: "Milan", cityRome: "Rome", cityFlorence: "Florence", cityVenice: "Venice",
+                classAll: "All cars", classSport: "Sports", classSuv: "Luxury SUV", classElegance: "Elegance",
+                searchCta: "Find a car", introEyebrow: "Beyond the journey", introTitle: "It’s not just the car.<br>It’s how it makes you feel.",
+                introCopy: "From the hand-delivered keys to the final mile, every detail is designed to let you enjoy the journey. Impeccable cars, personal assistance, no waiting.",
+                fleetEyebrow: "An extraordinary choice", fleetTitle: "Our collection", fleetLink: "View all cars",
+                categorySport: "Sports", categorySuv: "Luxury SUV", categoryElegance: "Elegance", perDay: "/ day",
+                metaAuto: "Automatic", seats: "seats", discoverCar: "Discover this car",
+                serviceTitle: "Your time is precious.<br><span>We understand.</span>",
+                serviceCta: "Speak to the concierge", footerCopy: "© 2026 Veloura. Excellence in motion.",
+                bookingSuccess: "Your request for {location} is ready. We’ll be in touch to confirm availability.",
+                bookingInvalid: "The return date must be after the pick-up date.",
+                menuOpen: "Open menu", menuClose: "Close menu"
+            }
+        };
+
+        let currentLanguage = "it";
+        const languageButtons = document.querySelectorAll("[data-language]");
+        const bookingForm = document.getElementById("booking-form");
+        const pickupDate = document.getElementById("pickup-date");
+        const returnDate = document.getElementById("return-date");
+        const bookingMessage = document.getElementById("booking-message");
+        const menuToggle = document.querySelector(".menu-toggle");
+        const today = new Date();
+        const todayString = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+
+        pickupDate.min = todayString;
+        returnDate.min = todayString;
+
+        function setLanguage(language) {
+            currentLanguage = language;
+            localStorage.setItem("veloura-language", language);
+            document.documentElement.lang = language;
+            document.querySelectorAll("[data-i18n]").forEach((element) => {
+                element.textContent = translations[language][element.dataset.i18n];
+            });
+            document.querySelectorAll("[data-i18n-html]").forEach((element) => {
+                element.innerHTML = translations[language][element.dataset.i18nHtml];
+            });
+            languageButtons.forEach((button) => {
+                button.setAttribute("aria-pressed", String(button.dataset.language === language));
+            });
+            menuToggle.setAttribute("aria-label", menuToggle.getAttribute("aria-expanded") === "true"
+                ? translations[language].menuClose
+                : translations[language].menuOpen);
+        }
+
+        languageButtons.forEach((button) => {
+            button.addEventListener("click", () => setLanguage(button.dataset.language));
+        });
+        setLanguage(localStorage.getItem("veloura-language") === "en" ? "en" : "it");
+
+        pickupDate.addEventListener("change", () => {
+            returnDate.min = pickupDate.value || todayString;
+            if (returnDate.value && returnDate.value <= pickupDate.value) returnDate.value = "";
+        });
+
+        bookingForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            if (returnDate.value <= pickupDate.value) {
+                bookingMessage.textContent = translations[currentLanguage].bookingInvalid;
+                return;
+            }
+            const location = document.getElementById("location").selectedOptions[0].textContent;
+            bookingMessage.textContent = translations[currentLanguage].bookingSuccess.replace("{location}", location);
+        });
+
+        menuToggle.addEventListener("click", () => {
+            const isOpen = menuToggle.getAttribute("aria-expanded") !== "true";
+            menuToggle.setAttribute("aria-expanded", String(isOpen));
+            menuToggle.setAttribute("aria-label", isOpen ? translations[currentLanguage].menuClose : translations[currentLanguage].menuOpen);
+            document.getElementById("main-nav").classList.toggle("is-open", isOpen);
+        });
+
+        document.querySelectorAll(".main-nav a").forEach((link) => {
+            link.addEventListener("click", () => {
+                menuToggle.setAttribute("aria-expanded", "false");
+                menuToggle.setAttribute("aria-label", translations[currentLanguage].menuOpen);
+                document.getElementById("main-nav").classList.remove("is-open");
+            });
+        });
+    </script>
+</body>
+</html>
